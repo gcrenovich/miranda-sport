@@ -1,0 +1,23 @@
+{
+  "name": "Miranda Sport",
+  "short_name": "Miranda Sport",
+  "description": "Equipamiento de Gimnasio Premium y Deporte de Alto Rendimiento",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121214",
+  "theme_color": "#ff2a75",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
