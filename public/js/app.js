@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     editingUserId: null
   };
 
+  let deferredPrompt = null;
+
   // 1. Initialize Application
   async function init() {
     // Read theme preference
@@ -63,6 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log('Miranda Sport: Inicialización completa.');
     window.appLoaded = true;
+
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then((reg) => console.log('Miranda Sport: Service Worker registrado con éxito.', reg.scope))
+        .catch((err) => console.error('Miranda Sport: Error al registrar el Service Worker.', err));
+    }
   }
 
   // 2. Refresh state from data layer
@@ -1082,6 +1091,49 @@ document.addEventListener('DOMContentLoaded', () => {
       };
       reader.readAsDataURL(file);
     });
+  }
+
+  // PWA Installation event listeners
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Show PWA install buttons in header/hero/footer
+    document.querySelectorAll('.install-pwa-btn').forEach(btn => {
+      if (btn.id === 'install-pwa-btn-footer') {
+        btn.style.display = 'inline-flex';
+      } else {
+        btn.style.display = 'flex';
+      }
+    });
+  });
+
+  // Bind install buttons action
+  document.querySelectorAll('.install-pwa-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (!deferredPrompt) {
+        alert("La aplicación ya está instalada o tu navegador no soporta instalación directa. Si usas iOS (iPhone), ve a la opción 'Compartir' en Safari y luego a 'Agregar a pantalla de inicio'.");
+        return;
+      }
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`PWA install user choice: ${outcome}`);
+      deferredPrompt = null;
+      document.querySelectorAll('.install-pwa-btn').forEach(b => b.style.display = 'none');
+    });
+  });
+
+  window.addEventListener('appinstalled', (evt) => {
+    console.log('Miranda Sport: App instalada correctamente.');
+    deferredPrompt = null;
+    document.querySelectorAll('.install-pwa-btn').forEach(btn => btn.style.display = 'none');
+    UI.showToast('¡Instalación Completada!', 'Miranda Sport ya está disponible en tu pantalla de inicio.', 'success');
+  });
+
+  // Auto-hide install buttons if running in standalone mode already
+  if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+    document.querySelectorAll('.install-pwa-btn').forEach(btn => btn.style.display = 'none');
   }
 
   // Fire initialization

@@ -9,6 +9,16 @@
   <meta name="description" content="Comprá equipamiento deportivo de alta gama para tu gimnasio u hogar. Catálogo completo, control de stock y facturación oficial AFIP simplificada en Miranda Sport.">
   <meta name="keywords" content="gimnasio, pesas, cintas de correr, mancuernas, barra olimpica, fitness, miranda sport, deporte, maquinas de gimnasio">
   
+  <!-- PWA Manifest & Icons -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ff2a75">
+  
+  <!-- Apple Web App Support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Miranda Sport">
+  <link rel="apple-touch-icon" href="/icon.svg">
+  
   <!-- FontAwesome Icons & Stylesheets -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/variables.css?v=1.0.4">
@@ -164,9 +174,9 @@
             <a href="#catalog-start" class="btn btn-primary btn-lg">
               <i class="fas fa-chevron-down"></i> Ver Catálogo
             </a>
-            <a href="/miranda-sport.apk" download class="btn btn-secondary btn-lg" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;">
-              <i class="fab fa-android" style="color: #3ddc84; font-size: 1.25rem;"></i> Descargar App (.APK)
-            </a>
+            <button id="install-pwa-btn-hero" class="btn btn-secondary btn-lg install-pwa-btn" style="display: none; align-items: center; gap: 0.5rem; border: none; cursor: pointer;">
+              <i class="fab fa-android" style="color: #3ddc84; font-size: 1.25rem;"></i> Instalar App Móvil
+            </button>
           </div>
         </div>
         <div class="hero-visual">
@@ -428,9 +438,9 @@
   <!-- 3. Footer -->
   <footer>
     <p>&copy; 2026 Miranda Sport - Todos los derechos reservados. Diseñado para alto rendimiento. | 
-       <a href="/miranda-sport.apk" download style="color: var(--accent-color); font-weight: 700; text-decoration: none; margin-left: 0.5rem; display: inline-flex; align-items: center; gap: 0.35rem;">
-         <i class="fab fa-android"></i> Descargar App Móvil (APK)
-       </a>
+       <button id="install-pwa-btn-footer" class="install-pwa-btn" style="display: none; color: var(--accent-color); font-weight: 700; text-decoration: none; margin-left: 0.5rem; align-items: center; gap: 0.35rem; background: none; border: none; cursor: pointer; font-family: inherit; font-size: inherit; padding: 0;">
+         <i class="fab fa-android"></i> Instalar App Móvil
+       </button>
     </p>
   </footer>
 
