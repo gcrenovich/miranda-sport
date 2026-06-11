@@ -8,8 +8,9 @@
     "dev": "node server.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
     "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mongodb": "^7.3.0",
     "mongoose": "^8.4.1"
   }
 }
