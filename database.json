@@ -1,0 +1,167 @@
+{
+  "products": [
+    {
+      "id": "prod-1",
+      "name": "Cinta de Correr Profesional M100",
+      "category": "Cardio",
+      "price": 1200000,
+      "cost": 800000,
+      "stock": 5,
+      "description": "Cinta de correr con motor de 3.5 HP, pantalla LED táctil, 12 programas preestablecidos y amortiguación premium para gimnasios de alto tráfico.",
+      "image": "https://images.unsplash.com/photo-1571008887538-b36bb32f4571?q=80&w=600&auto=format&fit=crop"
+    },
+    {
+      "id": "prod-2",
+      "name": "Bicicleta Fija de Spinning Pro-S",
+      "category": "Cardio",
+      "price": 450000,
+      "cost": 300000,
+      "stock": 8,
+      "description": "Bicicleta de spinning con volante de inercia de 18kg, resistencia magnética regulable y consola para medir distancia, pulso y calorías.",
+      "image": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=600&auto=format&fit=crop"
+    },
+    {
+      "id": "prod-3",
+      "name": "Kit Mancuernas Ajustables (2.5 a 24kg)",
+      "category": "Fuerza",
+      "price": 180000,
+      "cost": 120000,
+      "stock": 15,
+      "description": "Juego de mancuernas inteligentes con dial selector de peso rápido. Reemplaza 15 pares de mancuernas tradicionales ocupando el mínimo espacio.",
+      "image": "https://images.unsplash.com/photo-1638536532686-d610adfc8e5c?q=80&w=600&auto=format&fit=crop"
+    },
+    {
+      "id": "prod-4",
+      "name": "Barra Olímpica Profesional 20kg",
+      "category": "Fuerza",
+      "price": 120000,
+      "cost": 75000,
+      "stock": 12,
+      "description": "Barra cromada de 2.2 metros, rulemanes de alta resistencia, capacidad de carga hasta 450kg y terminación moleteada antideslizante.",
+      "image": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=600&auto=format&fit=crop"
+    },
+    {
+      "id": "prod-5",
+      "name": "Disco Olímpico Engomado 10kg",
+      "category": "Fuerza",
+      "price": 35000,
+      "cost": 20000,
+      "stock": 40,
+      "description": "Disco de hierro fundido recubierto de goma virgen de alta resistencia a impactos. Agarre triple tipo tri-grip para fácil transporte.",
+      "image": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=600&auto=format&fit=crop"
+    },
+    {
+      "id": "prod-6",
+      "name": "Colchoneta Fitness Alta Densidad",
+      "category": "Accesorios",
+      "price": 15000,
+      "cost": 8000,
+      "stock": 3,
+      "description": "Colchoneta de 100x50cm, espesor de 4cm en espuma de celda cerrada de alta densidad con funda impermeable y lavable con cierre.",
+      "image": "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?q=80&w=600&auto=format&fit=crop"
+    },
+    {
+      "id": "prod-7",
+      "name": "Banda Elástica de Látex Cerrada (Fuerte)",
+      "category": "Accesorios",
+      "price": 8000,
+      "cost": 4500,
+      "stock": 50,
+      "description": "Banda de resistencia circular de látex 100% natural, ideal para entrenamientos de tren inferior, calentamiento y dominadas asistidas.",
+      "image": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=600&auto=format&fit=crop"
+    },
+    {
+      "id": "prod-8",
+      "name": "Multigimnasio de 4 Estaciones M-90",
+      "category": "Fuerza",
+      "price": 2400000,
+      "cost": 1600000,
+      "stock": 2,
+      "description": "Equipo completo con torre de pesas de 100kg, estación de pecho mariposa, polea alta/baja, prensa de piernas y banco de abdominales.",
+      "image": "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=600&auto=format&fit=crop"
+    }
+  ],
+  "orders": [
+    {
+      "id": "ord-1",
+      "customerName": "Gimnasio Iron Fists",
+      "customerCuit": "30-71458932-5",
+      "customerEmail": "contacto@ironfists.com",
+      "customerPhone": "11-4567-8901",
+      "customerAddress": "Av. Cabildo 2450, CABA",
+      "paymentMethod": "transferencia",
+      "items": [
+        {
+          "productId": "prod-3",
+          "name": "Kit Mancuernas Ajustables (2.5 a 24kg)",
+          "price": 180000,
+          "quantity": 2
+        },
+        {
+          "productId": "prod-4",
+          "name": "Barra Olímpica Profesional 20kg",
+          "price": 120000,
+          "quantity": 1
+        }
+      ],
+      "subtotal": 480000,
+      "tax": 0,
+      "total": 480000,
+      "status": "Completado (Sin Factura)",
+      "date": "2026-06-08T14:30:22.000Z",
+      "invoiceNumber": "0001-00000104",
+      "invoiceType": "A"
+    },
+    {
+      "id": "ord-2",
+      "customerName": "Mariana López",
+      "customerCuit": "27-35987123-4",
+      "customerEmail": "mariana.lopez@gmail.com",
+      "customerPhone": "341-555-1234",
+      "customerAddress": "Pellegrini 1500, Rosario",
+      "paymentMethod": "efectivo",
+      "items": [
+        {
+          "productId": "prod-6",
+          "name": "Colchoneta Fitness Alta Densidad",
+          "price": 15000,
+          "quantity": 2
+        },
+        {
+          "productId": "prod-7",
+          "name": "Banda Elástica de Látex Cerrada (Fuerte)",
+          "price": 8000,
+          "quantity": 3
+        }
+      ],
+      "subtotal": 54000,
+      "tax": 0,
+      "total": 54000,
+      "status": "Completado (Sin Factura)",
+      "date": "2026-06-09T16:15:00.000Z"
+    }
+  ],
+  "settings": {
+    "heroTitle": "Equipamiento de Elite",
+    "heroDesc": "Equipamiento de alto rendimiento disenado para gimnasios exigentes.",
+    "heroImage": "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=800&auto=format&fit=crop",
+    "themeColor": "pink",
+    "glowEffects": false
+  },
+  "users": [
+    {
+      "id": "usr-1",
+      "username": "admin",
+      "password": "admin",
+      "role": "admin",
+      "name": "Administrador General"
+    },
+    {
+      "id": "usr-2",
+      "username": "vendedor",
+      "password": "vendedor",
+      "role": "vendedor",
+      "name": "Vendedor de Salón"
+    }
+  ]
+}

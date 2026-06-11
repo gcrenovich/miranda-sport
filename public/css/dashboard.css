@@ -1,0 +1,539 @@
+/* Admin Dashboard Interface Styles */
+
+/* 1. Dashboard Layout */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 992px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dashboard-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-nav-btn {
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: none;
+  border: none;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all var(--transition-fast);
+}
+
+.sidebar-nav-btn:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  transform: translateX(3px);
+}
+
+.sidebar-nav-btn.active {
+  background-color: var(--accent-color);
+  color: var(--text-light);
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.sidebar-nav-btn.active i {
+  color: var(--text-light);
+}
+
+.sidebar-nav-btn i {
+  font-size: 1.15rem;
+  transition: color var(--transition-fast);
+}
+
+/* 2. Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.stat-val {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.stat-val.profit {
+  color: var(--color-success);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  background-color: var(--bg-primary);
+}
+
+.stat-icon.pink {
+  color: var(--accent-color);
+  background-color: var(--bg-tertiary);
+}
+
+.stat-icon.green {
+  color: var(--color-success);
+  background-color: var(--color-success-bg);
+}
+
+.stat-icon.blue {
+  color: var(--color-info);
+  background-color: var(--color-info-bg);
+}
+
+.stat-icon.yellow {
+  color: var(--color-warning);
+  background-color: var(--color-warning-bg);
+}
+
+/* 3. Panel Sections */
+.panel-section {
+  display: none;
+  animation: fadeIn var(--transition-normal) forwards;
+}
+
+.panel-section.active {
+  display: block;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.panel-header h2 {
+  font-weight: 800;
+  font-size: 1.5rem;
+}
+
+/* 4. Custom Tables (Inventory & Orders) */
+.table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-secondary);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+th {
+  background-color: var(--bg-primary);
+  padding: 1rem 1.25rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-glass);
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background-color: var(--bg-primary);
+}
+
+/* Table items */
+.table-img {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  background-color: var(--bg-primary);
+}
+
+.table-product-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.table-product-name {
+  font-weight: 700;
+}
+
+.table-product-cat {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.table-stock-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.table-stock-status.in-stock { color: var(--color-success); }
+.table-stock-status.low-stock { color: var(--color-warning); }
+.table-stock-status.out-of-stock { color: var(--color-danger); }
+
+/* Badges for order status */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.status-badge.pendiente {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.status-badge.en-proceso {
+  background-color: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+.status-badge.entregado {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.status-badge.facturado {
+  background-color: #fce7f3; /* Pink background */
+  color: #db2777; /* Hot Pink */
+}
+
+.status-badge.completado-sin-factura {
+  background-color: #e2e8f0; /* Slate background */
+  color: #475569; /* Slate text */
+  border: 1px dashed #cbd5e1;
+}
+
+.status-badge.pendiente-de-stock {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+  border: 1px dashed var(--color-warning);
+}
+
+.status-badge.cancelado {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+/* Action buttons in tables */
+.table-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-glass);
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.action-icon-btn:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.action-icon-btn.edit:hover {
+  color: var(--color-info);
+  border-color: var(--color-info);
+}
+
+.action-icon-btn.delete:hover {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.action-icon-btn.invoice:hover {
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+/* 5. ARCA / AFIP Official Mock Invoicing View */
+.invoice-container {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000000;
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border: 1px solid #000000;
+  font-size: 11px;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.4;
+}
+
+.invoice-header-box {
+  display: grid;
+  grid-template-columns: 1.2fr 0.3fr 1.2fr;
+  border-bottom: 1px solid #000000;
+  align-items: stretch;
+}
+
+.invoice-header-left, .invoice-header-right {
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.invoice-header-left h1 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.invoice-header-right h2 {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  text-align: right;
+}
+
+.invoice-header-type {
+  border: 1px solid #000000;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.invoice-header-type span {
+  font-size: 8px;
+  font-weight: normal;
+  text-align: center;
+  margin-top: -3px;
+}
+
+.invoice-header-center-divider {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.invoice-header-center-divider::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  border-left: 1px solid #000000;
+  z-index: 1;
+}
+
+.invoice-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid #000000;
+  padding: 0.5rem 0.75rem;
+}
+
+.invoice-party-box {
+  border: 1px solid #000000;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #f9f9f9;
+}
+
+.invoice-party-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  margin-bottom: 2px;
+}
+
+.invoice-table {
+  width: 100%;
+  margin-top: 0.75rem;
+  border: 1px solid #000000;
+  font-size: 10px;
+}
+
+.invoice-table th {
+  background-color: #e5e5e5;
+  color: #000000;
+  font-weight: bold;
+  border: 1px solid #000000;
+  padding: 4px 6px;
+  text-transform: none;
+}
+
+.invoice-table td {
+  border: 1px solid #000000;
+  padding: 4px 6px;
+  background-color: #ffffff !important;
+}
+
+.invoice-totals-area {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.invoice-totals-box {
+  width: 250px;
+  border: 1px solid #000000;
+  padding: 6px;
+  font-size: 11px;
+}
+
+.invoice-totals-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.invoice-totals-row.grand-total {
+  font-weight: bold;
+  font-size: 13px;
+  border-top: 1px solid #000000;
+  padding-top: 4px;
+  margin-top: 4px;
+}
+
+.invoice-afip-footer {
+  margin-top: 1.5rem;
+  border-top: 1px solid #000000;
+  padding-top: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.invoice-afip-logo {
+  height: 24px;
+}
+
+.invoice-afip-cae-box {
+  text-align: right;
+  font-size: 10px;
+}
+
+.invoice-afip-cae-row {
+  font-weight: bold;
+}
+
+.invoice-barcode-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-top: 1rem;
+}
+
+.invoice-barcode {
+  font-family: 'Libre Barcode 39', cursive, monospace;
+  font-size: 32px;
+  letter-spacing: 1px;
+  user-select: none;
+}
+
+.invoice-qr-code {
+  width: 60px;
+  height: 60px;
+  background-color: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  font-weight: bold;
+  font-size: 8px;
+  text-align: center;
+}
+
+/* Styles for print output */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .invoice-container, .invoice-container * {
+    visibility: visible;
+  }
+  .invoice-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    border: none;
+  }
+  .modal-overlay {
+    background: none !important;
+    backdrop-filter: none !important;
+  }
+  .modal-content {
+    box-shadow: none !important;
+    padding: 0 !important;
+    background: #fff !important;
+    border: none !important;
+  }
+  .modal-close, .btn {
+    display: none !important;
+  }
+}

@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* Fonts */
+  --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Color Palette - Inspired by the Miranda Sport logo */
+  --logo-pink: #f9a0be; /* Sweet pastel pink from logo background */
+  --logo-pink-light: #fcd5e2;
+  --logo-pink-dark: #d66487;
+  
+  /* Rainbow Gradient values from the logo heart */
+  --rainbow-grad: linear-gradient(45deg, #e60012, #f39800, #fff100, #009944, #00a0e9, #1d2088, #920783);
+  
+  /* Light Theme Colors */
+  --bg-primary: #fff5f7; /* Soft pink-tinted white */
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #fcd5e2;
+  --bg-glass: rgba(255, 255, 255, 0.75);
+  --border-glass: rgba(255, 160, 190, 0.3);
+  
+  --text-primary: #1e1f24; /* Soft dark charcoal */
+  --text-secondary: #5e6273;
+  --text-light: #ffffff;
+  
+  --accent-color: #ff3e83; /* Neon pink */
+  --accent-color-hover: #e0286b;
+  --accent-glow: rgba(255, 62, 131, 0.4);
+  
+  --shadow-sm: 0 4px 6px -1px rgba(220, 100, 130, 0.08);
+  --shadow-md: 0 10px 15px -3px rgba(220, 100, 130, 0.12), 0 4px 6px -2px rgba(220, 100, 130, 0.05);
+  --shadow-lg: 0 20px 25px -5px rgba(220, 100, 130, 0.18), 0 10px 10px -5px rgba(220, 100, 130, 0.08);
+  --shadow-glow: 0 0 15px rgba(255, 62, 131, 0.35);
+
+  /* Status Colors */
+  --color-success: #10b981;
+  --color-success-bg: #d1fae5;
+  --color-warning: #f59e0b;
+  --color-warning-bg: #fef3c7;
+  --color-danger: #ef4444;
+  --color-danger-bg: #fee2e2;
+  --color-info: #3b82f6;
+  --color-info-bg: #dbeafe;
+
+  /* Layout Variables */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Mode Overrides (Optional / Interactive) */
+[data-theme="dark"] {
+  --bg-primary: #0d0f14; /* Pure modern dark slate */
+  --bg-secondary: #151821;
+  --bg-tertiary: #222634;
+  --bg-glass: rgba(21, 24, 33, 0.8);
+  --border-glass: rgba(255, 160, 190, 0.15);
+  
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-light: #ffffff;
+  
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px rgba(255, 62, 131, 0.5);
+  
+  --logo-pink: #d66487;
+  --bg-tertiary: #1f2330;
+}

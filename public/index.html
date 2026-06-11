@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Meta Tags -->
+  <title>Miranda Sport - Equipamiento de Gimnasio Premium</title>
+  <meta name="description" content="Comprá equipamiento deportivo de alta gama para tu gimnasio u hogar. Catálogo completo, control de stock y facturación oficial AFIP simplificada en Miranda Sport.">
+  <meta name="keywords" content="gimnasio, pesas, cintas de correr, mancuernas, barra olimpica, fitness, miranda sport, deporte, maquinas de gimnasio">
+  
+  <!-- FontAwesome Icons & Stylesheets -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css?v=1.0.4">
+  <link rel="stylesheet" href="css/main.css?v=1.0.4">
+  <link rel="stylesheet" href="css/ecommerce.css?v=1.0.4">
+  <link rel="stylesheet" href="css/dashboard.css?v=1.0.4">
+  <script>
+    window.appLoaded = false;
+    function handleAdminBtnClickInline(event) {
+      if (window.appLoaded) {
+        return; // Let app.js listener handle it
+      }
+      event.preventDefault();
+      
+      const username = prompt("Miranda Sport - Acceso Vendedor (Modo Seguro)\n\nIngrese su usuario:");
+      if (username === null) return;
+      
+      const password = prompt("Miranda Sport - Acceso Vendedor (Modo Seguro)\n\nIngrese su contraseña:");
+      if (password === null) return;
+      
+      if (username.trim() === 'admin' && password === 'admin') {
+        document.querySelectorAll('.app-section').forEach(sec => sec.classList.remove('active'));
+        const adminSec = document.getElementById('section-admin');
+        if (adminSec) adminSec.classList.add('active');
+        
+        const tiendaBtn = document.getElementById('nav-tienda-btn');
+        const adminBtn = document.getElementById('nav-admin-btn');
+        const cartToggle = document.getElementById('cart-toggle');
+        if (tiendaBtn) tiendaBtn.style.borderBottom = '2px solid transparent';
+        if (adminBtn) adminBtn.style.borderBottom = '2px solid var(--accent-color)';
+        if (cartToggle) cartToggle.style.display = 'none';
+        
+        alert("Acceso Autorizado en Modo Seguro.");
+      } else {
+        alert("Acceso Denegado: Usuario o contraseña incorrectos.");
+      }
+    }
+    
+    function handleTiendaBtnClickInline(event) {
+      if (window.appLoaded) {
+        return;
+      }
+      event.preventDefault();
+      document.querySelectorAll('.app-section').forEach(sec => sec.classList.remove('active'));
+      const tiendaSec = document.getElementById('section-tienda');
+      if (tiendaSec) tiendaSec.classList.add('active');
+      
+      const tiendaBtn = document.getElementById('nav-tienda-btn');
+      const adminBtn = document.getElementById('nav-admin-btn');
+      const cartToggle = document.getElementById('cart-toggle');
+      if (tiendaBtn) tiendaBtn.style.borderBottom = '2px solid var(--accent-color)';
+      if (adminBtn) adminBtn.style.borderBottom = '2px solid transparent';
+      if (cartToggle) cartToggle.style.display = 'flex';
+    }
+    
+    function handleTrackingBtnClickInline(event) {
+      if (window.appLoaded) {
+        return;
+      }
+      event.preventDefault();
+      const trackingModal = document.getElementById('tracking-modal-overlay');
+      if (trackingModal) {
+        trackingModal.classList.add('active');
+        const trackingInput = document.getElementById('tracking-code-input');
+        const trackingResult = document.getElementById('tracking-result');
+        if (trackingInput) {
+          trackingInput.value = '';
+          setTimeout(() => trackingInput.focus(), 100);
+        }
+        if (trackingResult) {
+          trackingResult.innerHTML = '';
+          trackingResult.style.display = 'none';
+        }
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <!-- 1. Header Navigation Bar -->
+  <header>
+    <div class="navbar-container">
+      <a href="#" id="nav-logo" class="logo-link" aria-label="Volver al inicio" onclick="handleTiendaBtnClickInline(event)">
+        <!-- Unified SVG Logo matching user reference image -->
+        <svg class="logo-svg-unified" viewBox="0 0 240 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="logoRainbowGrad" x1="0%" y1="50%" x2="100%" y2="50%">
+              <stop offset="0%" stop-color="#e60012" />
+              <stop offset="17%" stop-color="#f39800" />
+              <stop offset="34%" stop-color="#fff100" />
+              <stop offset="51%" stop-color="#009944" />
+              <stop offset="68%" stop-color="#00a0e9" />
+              <stop offset="85%" stop-color="#1d2088" />
+              <stop offset="100%" stop-color="#920783" />
+            </linearGradient>
+          </defs>
+          <!-- Symmetrical Heart path with thick rainbow stroke -->
+          <path class="logo-heart-path" d="M 40,32 C 30,18 5,18 5,44 C 5,66 30,81 40,89 C 50,81 75,66 75,44 C 75,18 50,18 40,32 Z" />
+          <!-- Black outline for heartbeat line -->
+          <path class="logo-pulse-bg-path" d="M 6,52 L 18,52 L 24,32 L 33,66 L 42,32 L 50,66 L 56,52 L 72,52" />
+          <!-- White heartbeat line overlay inside heart forming the M -->
+          <path class="logo-pulse-path" d="M 6,52 L 18,52 L 24,32 L 33,66 L 42,32 L 50,66 L 56,52 L 72,52" />
+          <!-- Text iranda next to M -->
+          <text x="54" y="66" class="logo-text-iranda">iranda</text>
+          <!-- Text sport. below iranda -->
+          <text x="110" y="86" class="logo-text-sport">sport.</text>
+        </svg>
+      </a>
+
+      <!-- Page routing actions -->
+      <nav class="nav-actions">
+        <button id="nav-tienda-btn" class="nav-btn nav-btn-secondary" style="border-bottom: 2px solid var(--accent-color);" onclick="handleTiendaBtnClickInline(event)">
+          <i class="fas fa-store"></i> Tienda
+        </button>
+        <button id="nav-tracking-btn" class="nav-btn nav-btn-secondary" onclick="handleTrackingBtnClickInline(event)">
+          <i class="fas fa-search-location"></i> Seguir Pedido
+        </button>
+        <button id="nav-admin-btn" class="nav-btn nav-btn-primary" onclick="handleAdminBtnClickInline(event)">
+          <i class="fas fa-cog"></i> Panel Vendedor
+        </button>
+        
+        <!-- Shopping Cart toggle button -->
+        <button id="cart-toggle" class="cart-icon-btn" aria-label="Abrir carrito de compras">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cart-badge" class="cart-badge" style="display: none;">0</span>
+        </button>
+
+        <!-- Theme toggle button -->
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema de color">
+          <i class="fas fa-moon"></i>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 2. Main Content Container -->
+  <main>
+
+    <!-- SECTION A: CLIENT STOREFRONT (ECOMMERCE) -->
+    <section id="section-tienda" class="app-section active">
+      
+      <!-- Hero Banner -->
+      <div class="hero-section">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <i class="fas fa-heartbeat"></i> EQUIPAMIENTO DE ALTO RENDIMIENTO
+          </div>
+          <h1 class="hero-title">Energía que impulsa tu <span>rendimiento</span></h1>
+          <p class="hero-desc">
+            Fabricamos e importamos instrumentos deportivos de máxima durabilidad y diseño ergonómico para gimnasios y deportistas profesionales.
+          </p>
+          <a href="#catalog-start" class="btn btn-primary btn-lg">
+            <i class="fas fa-chevron-down"></i> Ver Catálogo
+          </a>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-glow-card"></div>
+          <!-- Premium visual SVG or high quality image link representing gym instruments -->
+          <img src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=800&auto=format&fit=crop" 
+               alt="Instrumentos Deportivos Miranda Sport" class="hero-image">
+        </div>
+      </div>
+
+      <div id="catalog-start" style="scroll-margin-top: 100px;"></div>
+
+      <!-- Search & Category Filters -->
+      <div class="store-controls">
+        <div class="search-box">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" id="search-input" class="search-input" placeholder="Buscar mancuernas, barras, cintas...">
+        </div>
+        <div class="filter-tabs" id="filter-tabs">
+          <button class="filter-btn active">Todos</button>
+          <button class="filter-btn">Cardio</button>
+          <button class="filter-btn">Fuerza</button>
+          <button class="filter-btn">Accesorios</button>
+        </div>
+      </div>
+
+      <!-- Dynamic Products Grid -->
+      <div id="products-grid" class="products-grid">
+        <!-- Rendered by UI.js -->
+      </div>
+    </section>
+
+
+    <!-- SECTION B: SELLER PORTAL (ADMIN DASHBOARD) -->
+    <section id="section-admin" class="app-section">
+      <div class="dashboard-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="dashboard-sidebar glass-panel" id="admin-sidebar">
+          <button class="sidebar-nav-btn active" data-panel="dashboard">
+            <i class="fas fa-chart-pie"></i> Resumen del Negocio
+          </button>
+          <button class="sidebar-nav-btn" data-panel="inventario">
+            <i class="fas fa-boxes"></i> Control de Stock
+          </button>
+          <button class="sidebar-nav-btn" data-panel="pedidos">
+            <i class="fas fa-clipboard-list"></i> Pedidos y Ventas
+          </button>
+          <button class="sidebar-nav-btn" data-panel="personalizar">
+            <i class="fas fa-palette"></i> Personalizar Tienda
+          </button>
+          <button class="sidebar-nav-btn" data-panel="usuarios" id="nav-usuarios-btn" style="display: none;">
+            <i class="fas fa-users-cog"></i> Gestión de Usuarios
+          </button>
+        </aside>
+
+        <!-- Dynamic Admin Sub-panels -->
+        <div class="dashboard-content">
+          
+          <!-- SUB-PANEL 1: DASHBOARD OVERVIEW -->
+          <div id="panel-dashboard" class="panel-section active">
+            <div class="panel-header">
+              <h2>Panel de Control</h2>
+            </div>
+            
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+              <div class="glass-panel stat-card">
+                <div class="stat-info">
+                  <span class="stat-label">Total Ventas (Neto)</span>
+                  <span id="stat-total-ventas" class="stat-val">$0</span>
+                </div>
+                <div class="stat-icon green">
+                  <i class="fas fa-cash-register"></i>
+                </div>
+              </div>
+              <div class="glass-panel stat-card">
+                <div class="stat-info">
+                  <span class="stat-label">Ganancia Bruta</span>
+                  <span id="stat-total-ganancias" class="stat-val profit">$0</span>
+                </div>
+                <div class="stat-icon pink">
+                  <i class="fas fa-hand-holding-usd"></i>
+                </div>
+              </div>
+              <div class="glass-panel stat-card">
+                <div class="stat-info">
+                  <span class="stat-label">Pedidos Recibidos</span>
+                  <span id="stat-total-pedidos" class="stat-val">0</span>
+                </div>
+                <div class="stat-icon blue">
+                  <i class="fas fa-shopping-basket"></i>
+                </div>
+              </div>
+              <div class="glass-panel stat-card">
+                <div class="stat-info">
+                  <span class="stat-label">Variedad de Stock</span>
+                  <span id="stat-total-productos" class="stat-val">0</span>
+                </div>
+                <div class="stat-icon yellow">
+                  <i class="fas fa-dumbbell"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Business Guidance note -->
+            <div class="glass-panel" style="margin-top: 2rem;">
+              <h3 style="margin-bottom: 0.75rem; font-weight: 700;"><i class="fas fa-heartbeat" style="color: var(--accent-color);"></i> Gestión Operativa: Miranda Sport</h3>
+              <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.5;">
+                Desde este panel móvil y de escritorio puedes gestionar el flujo completo de tu marca de equipamiento deportivo. En la sección <strong>Control de Stock</strong> puedes cargar nuevos productos, editar precios de costo o venta y vigilar alertas de reposición. En <strong>Pedidos y Ventas</strong> podrás despachar las órdenes de tus clientes y emitir facturación electrónica válida compatible con los requerimientos impositivos de ARCA/AFIP en Argentina.
+              </p>
+            </div>
+          </div>
+
+          <!-- SUB-PANEL 2: INVENTORY STOCK CONTROL -->
+          <div id="panel-inventario" class="panel-section">
+            <div class="panel-header">
+              <h2>Inventario y Carga de Stock</h2>
+              <button id="admin-add-product-btn" class="btn btn-primary">
+                <i class="fas fa-plus-circle"></i> Agregar Producto
+              </button>
+            </div>
+            
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Precio Venta</th>
+                    <th>Precio Costo</th>
+                    <th>Margen</th>
+                    <th>Estado Stock</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="inventory-table-body">
+                  <!-- Rendered by UI.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SUB-PANEL 3: ORDERS LOGS & BILLING -->
+          <div id="panel-pedidos" class="panel-section">
+            <div class="panel-header">
+              <h2>Pedidos de Clientes y Facturación</h2>
+            </div>
+            
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Orden</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Importe Total</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-table-body">
+                  <!-- Rendered by UI.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SUB-PANEL 4: STORE CUSTOMIZATION -->
+          <div id="panel-personalizar" class="panel-section">
+            <div class="panel-header">
+              <h2>Personalizar Portada e Imagen de Tienda</h2>
+            </div>
+            
+            <div class="glass-panel">
+              <form id="store-custom-form">
+                <h3 style="margin-bottom: 1.25rem; font-weight: 700; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;"><i class="fas fa-edit" style="color: var(--accent-color);"></i> Textos y Portada de Inicio</h3>
+                
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label class="form-label" for="custom-hero-title">Título Principal de la Portada *</label>
+                  <input type="text" id="custom-hero-title" class="form-input" required style="width: 100%;">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label class="form-label" for="custom-hero-desc">Subtítulo / Leyenda de Portada *</label>
+                  <textarea id="custom-hero-desc" class="form-input" style="height: 80px; width: 100%; resize: vertical;" required></textarea>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                  <label class="form-label" for="custom-hero-image">Imagen de Portada *</label>
+                  <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <input type="url" id="custom-hero-image" class="form-input" required style="width: 100%;" placeholder="Ingrese URL de la imagen o suba un archivo abajo">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <span style="font-size: 0.8rem; color: var(--text-secondary);">O subir archivo local:</span>
+                      <input type="file" id="custom-hero-image-file" accept="image/*" style="font-size: 0.8rem; cursor: pointer; color: var(--text-secondary);">
+                    </div>
+                  </div>
+                  <img id="custom-hero-image-preview" src="" alt="Vista previa de portada" 
+                       style="max-width: 200px; height: 100px; object-fit: cover; margin-top: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--border-glass); display: none;">
+                </div>
+
+                <h3 style="margin-top: 2rem; margin-bottom: 1.25rem; font-weight: 700; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;"><i class="fas fa-palette" style="color: var(--accent-color);"></i> Color de Fondo y Estilo de la Tienda</h3>
+                
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                  <label class="form-label">Color de Fondo Destacado</label>
+                  <input type="hidden" id="custom-theme-color" value="pink">
+                  <div class="color-theme-selector" style="display: flex; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap;">
+                    <div class="color-pill active" data-color="pink" style="background-color: #f9a0be; border: 3px solid #fff; box-shadow: 0 0 8px rgba(255, 62, 131, 0.4); width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: transform var(--transition-fast);" title="Rosa Pastel"></div>
+                    <div class="color-pill" data-color="purple" style="background-color: #c084fc; border: 3px solid transparent; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: transform var(--transition-fast);" title="Morado Pastel"></div>
+                    <div class="color-pill" data-color="blue" style="background-color: #7dd3fc; border: 3px solid transparent; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: transform var(--transition-fast);" title="Celeste Pastel"></div>
+                    <div class="color-pill" data-color="neon" style="background-color: #ff2a75; border: 3px solid transparent; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: transform var(--transition-fast);" title="Rosa Neón"></div>
+                    <div class="color-pill" data-color="coral" style="background-color: #fca5a5; border: 3px solid transparent; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: transform var(--transition-fast);" title="Coral Pastel"></div>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                  <input type="checkbox" id="custom-glow-effects" style="width: 22px; height: 22px; cursor: pointer; accent-color: var(--accent-color);">
+                  <label for="custom-glow-effects" style="font-size: 0.95rem; cursor: pointer; user-select: none; font-weight: 500;">Habilitar Brillos y Destellos Animados en la Tienda</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.9rem; font-weight: 700;">
+                  Guardar Personalización
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- SUB-PANEL 5: USERS MANAGEMENT -->
+          <div id="panel-usuarios" class="panel-section">
+            <div class="panel-header">
+              <h2>Administración de Usuarios</h2>
+              <button id="admin-add-user-btn" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Agregar Usuario
+              </button>
+            </div>
+            
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Usuario</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table-body">
+                  <!-- Rendered by UI.js / app.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 3. Footer -->
+  <footer>
+    <p>&copy; 2026 Miranda Sport - Todos los derechos reservados. Diseñado para alto rendimiento.</p>
+  </footer>
+
+  <!-- ================= OVERLAYS & MODALS ================= -->
+
+  <!-- DRAWER: SHOPPING CART SLIDE PANEL (CLIENT) -->
+  <div id="cart-drawer-overlay" class="cart-drawer-overlay"></div>
+  <div id="cart-drawer" class="cart-drawer">
+    <div class="cart-header">
+      <h2>Mi Carrito</h2>
+      <button id="cart-close-btn" class="cart-close-btn" aria-label="Cerrar carrito">&times;</button>
+    </div>
+    
+    <!-- Cart products listing -->
+    <div id="cart-items-list" class="cart-items-list">
+      <!-- Rendered by UI.js -->
+    </div>
+
+    <!-- Pricing Summary Footer -->
+    <div class="cart-footer">
+      <div class="cart-summary-row">
+        <span>Subtotal (Neto):</span>
+        <span id="cart-subtotal">$0</span>
+      </div>
+      <div class="cart-summary-row">
+        <span>IVA Alícuota (21%):</span>
+        <span id="cart-tax">$0</span>
+      </div>
+      <div class="shipping-promo-bar">
+        <div id="shipping-text">Te faltan $1.000.000 para conseguir envío gratis</div>
+        <div class="shipping-progress">
+          <div id="shipping-progress-fill" class="shipping-progress-fill"></div>
+        </div>
+      </div>
+      <div class="cart-summary-row total">
+        <span>Total:</span>
+        <span id="cart-total">$0</span>
+      </div>
+      <button id="checkout-btn" class="btn btn-primary checkout-btn" disabled>
+        <i class="fas fa-shopping-bag"></i> Continuar Compra
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: CHECKOUT CLIENT DETAILS FORM -->
+  <div id="checkout-modal-overlay" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" id="checkout-modal-close">&times;</button>
+      
+      <!-- SCREEN 1: Fill customer info form -->
+      <div id="checkout-form-screen">
+        <h2 style="margin-bottom: 1.5rem; font-weight: 800; border-bottom: 2px solid var(--bg-primary); padding-bottom: 0.5rem;">Datos de Entrega y Pedido</h2>
+        <form id="checkout-form">
+          <div class="form-group">
+            <label class="form-label" for="cust-name">Nombre Completo o Gimnasio *</label>
+            <input type="text" id="cust-name" class="form-input" required placeholder="Ej. Gimnasio Hulk o Juan Pérez">
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="cust-cuit">CUIT / CUIL (Opcional)</label>
+              <input type="text" id="cust-cuit" class="form-input" placeholder="Ej. 30-71850122-3">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cust-phone">Teléfono de Contacto *</label>
+              <input type="tel" id="cust-phone" class="form-input" required placeholder="Ej. 11 4820-4039">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="cust-email">Correo Electrónico *</label>
+            <input type="email" id="cust-email" class="form-input" required placeholder="correo@ejemplo.com">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="cust-address">Dirección de Entrega *</label>
+            <input type="text" id="cust-address" class="form-input" required placeholder="Av. Siempre Viva 742, Rosario">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Método de Pago Seleccionado</label>
+            <input type="hidden" id="payment-method-input" value="transferencia">
+            <div class="payment-selector" id="payment-selector">
+              <div class="payment-pill active" data-method="transferencia">
+                <i class="fas fa-university"></i>
+                <span>Transferencia</span>
+              </div>
+              <div class="payment-pill" data-method="tarjeta">
+                <i class="fas fa-credit-card"></i>
+                <span>Tarjeta</span>
+              </div>
+              <div class="payment-pill" data-method="efectivo">
+                <i class="fas fa-money-bill-wave"></i>
+                <span>Efectivo</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary Preview inside form -->
+          <div class="glass-panel" style="margin-top: 1.5rem; margin-bottom: 1.5rem; padding: 1rem;">
+            <h4 style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;">Resumen final del pedido</h4>
+            <div class="receipt-row" style="font-size: 0.85rem; margin-bottom: 3px; display: flex; justify-content: space-between;">
+              <span>Subtotal neto:</span>
+              <span id="modal-summary-subtotal">$0</span>
+            </div>
+            <div class="receipt-row" style="font-size: 0.85rem; margin-bottom: 3px; display: flex; justify-content: space-between;">
+              <span>IVA (21%):</span>
+              <span id="modal-summary-tax">$0</span>
+            </div>
+            <div class="receipt-row" style="font-size: 1rem; font-weight: 800; border-top: 1px dotted var(--border-glass); padding-top: 0.5rem; margin-top: 0.5rem; display: flex; justify-content: space-between;">
+              <span>Total Estimado:</span>
+              <span id="modal-summary-total">$0</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.9rem;">
+            Confirmar Pedido
+          </button>
+        </form>
+      </div>
+
+      <!-- SCREEN 2: Success receipt review -->
+      <div id="checkout-success-screen" class="success-screen" style="display: none;">
+        <div class="success-icon">
+          <i class="fas fa-check"></i>
+        </div>
+        <h3 class="success-title">¡Pedido Registrado!</h3>
+        <p class="success-desc">
+          Tu pedido ha sido procesado de forma exitosa. El vendedor ya cuenta con el detalle del pedido para despachar y facturar.
+        </p>
+        
+        <div class="order-receipt-summary">
+          <div class="receipt-header">Orden Nº: <span id="success-order-id">00000</span></div>
+          <div id="success-receipt-items" style="margin-bottom: 0.75rem;">
+            <!-- Rendered by app.js -->
+          </div>
+          <div class="receipt-row">
+            <span>Subtotal Neto:</span>
+            <span id="success-receipt-subtotal">$0</span>
+          </div>
+          <div class="receipt-row">
+            <span>IVA (21%):</span>
+            <span id="success-receipt-tax">$0</span>
+          </div>
+          <div class="receipt-row bold">
+            <span>Total:</span>
+            <span id="success-receipt-total">$0</span>
+          </div>
+        </div>
+
+        <button id="success-close-btn" class="btn btn-secondary" style="width: 100%;">
+          Entendido, Volver a la Tienda
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT PRODUCT FORM (ADMIN) -->
+  <div id="product-modal-overlay" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" id="product-modal-close">&times;</button>
+      <h2 id="product-modal-title" style="margin-bottom: 1.5rem; font-weight: 800; border-bottom: 2px solid var(--bg-primary); padding-bottom: 0.5rem;">Cargar Producto</h2>
+      
+      <form id="product-form">
+        <div class="form-group">
+          <label class="form-label" for="prod-name">Nombre del Producto *</label>
+          <input type="text" id="prod-name" class="form-input" required placeholder="Ej. Mancuernas Macizas Hexagonales 5kg">
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="prod-category">Categoría *</label>
+            <select id="prod-category" class="form-input" required>
+              <option value="Cardio">Cardio</option>
+              <option value="Fuerza">Fuerza</option>
+              <option value="Accesorios">Accesorios</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="prod-stock">Cantidad en Stock *</label>
+            <input type="number" id="prod-stock" class="form-input" min="0" required placeholder="Ej. 10">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="prod-price">Precio Venta (Con IVA) *</label>
+            <input type="number" id="prod-price" class="form-input" min="0" required placeholder="Ej. 18000">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="prod-cost">Precio Costo (Neto) *</label>
+            <input type="number" id="prod-cost" class="form-input" min="0" required placeholder="Ej. 11000">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="prod-image">Imagen del Producto</label>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <input type="url" id="prod-image" class="form-input" placeholder="https://ejemplo.com/imagen.jpg">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">O subir archivo local:</span>
+              <input type="file" id="prod-image-file" accept="image/*" style="font-size: 0.8rem; cursor: pointer; color: var(--text-secondary);">
+            </div>
+          </div>
+          <img id="product-image-preview" src="" alt="Vista previa del producto" 
+               style="max-width: 100px; height: 100px; object-fit: cover; margin-top: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-glass); display: none;">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="prod-desc">Descripción del Producto *</label>
+          <textarea id="prod-desc" class="form-input" style="height: 100px; resize: vertical;" required placeholder="Especificaciones del instrumento deportivo..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.9rem;">
+          Guardar Producto
+        </button>
+      </form>
+    </div>
+  <!-- MODAL: CUSTOMER ORDER TRACKING -->
+  <div id="tracking-modal-overlay" class="modal-overlay">
+    <div class="modal-content" style="max-width: 500px; padding: 2.5rem 2rem 2rem 2rem;">
+      <button class="modal-close" id="tracking-modal-close">&times;</button>
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="font-size: 3rem; color: var(--accent-color); margin-bottom: 0.5rem;">
+          <i class="fas fa-search-location"></i>
+        </div>
+        <h3 style="font-weight: 800; font-size: 1.4rem;">Seguimiento de Pedido</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.4; margin-top: 0.25rem;">
+          Consulte el estado actual de su compra en tiempo real.
+        </p>
+      </div>
+      <form id="tracking-form" style="margin-bottom: 1.5rem;">
+        <div class="form-group" style="display: flex; gap: 0.5rem; margin-bottom: 0;">
+          <input type="text" id="tracking-code-input" class="form-input" placeholder="Ej. ord-178109..." required style="width: 100%;" autocomplete="off">
+          <button type="submit" class="btn btn-primary" style="padding: 0 1.5rem;">Buscar</button>
+        </div>
+      </form>
+      
+      <!-- Results box -->
+      <div id="tracking-result" style="display: none;">
+        <!-- Filled dynamically by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SECURITY LOGIN ACCESS FOR VENDOR -->
+  <div id="pin-modal-overlay" class="modal-overlay">
+    <div class="modal-content" style="max-width: 400px; padding: 2.5rem 2rem 2rem 2rem;">
+      <button class="modal-close" id="pin-modal-close">&times;</button>
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="font-size: 3rem; color: var(--accent-color); margin-bottom: 0.5rem;">
+          <i class="fas fa-user-lock"></i>
+        </div>
+        <h3 style="font-weight: 800; font-size: 1.4rem;">Acceso Restringido</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.4; margin-top: 0.25rem;">
+          Inicie sesión con sus credenciales de vendedor para ingresar.
+        </p>
+      </div>
+      <form id="login-form">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label" for="login-username" style="font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem; display: block;">Usuario *</label>
+          <input type="text" id="login-username" class="form-input" placeholder="admin" required style="width: 100%;" autocomplete="username">
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label class="form-label" for="login-password" style="font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem; display: block;">Contraseña *</label>
+          <input type="password" id="login-password" class="form-input" placeholder="••••••••" required style="width: 100%;" autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.9rem; font-weight: 700;">
+          Iniciar Sesión
+        </button>
+      </form>
+      <div style="margin-top: 1.25rem; font-size: 0.75rem; color: var(--text-secondary); text-align: center; border-top: 1px dashed var(--border-glass); padding-top: 0.75rem;">
+        Usuario: <strong>admin</strong> &nbsp;|&nbsp; Clave: <strong>admin</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT USER FORM (ADMIN) -->
+  <div id="user-modal-overlay" class="modal-overlay">
+    <div class="modal-content" style="max-width: 400px; padding: 2.5rem 2rem 2rem 2rem;">
+      <button class="modal-close" id="user-modal-close">&times;</button>
+      <h2 id="user-modal-title" style="margin-bottom: 1.5rem; font-weight: 800; border-bottom: 2px solid var(--bg-primary); padding-bottom: 0.5rem;">Cargar Usuario</h2>
+      
+      <form id="user-form">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label" for="user-name">Nombre Completo *</label>
+          <input type="text" id="user-name" class="form-input" required placeholder="Ej. Juan Pérez">
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label" for="user-username">Nombre de Usuario *</label>
+          <input type="text" id="user-username" class="form-input" required placeholder="Ej. jperez">
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label" for="user-password">Contraseña *</label>
+          <input type="password" id="user-password" class="form-input" placeholder="••••••••">
+          <small style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-top: 0.25rem;" id="user-password-hint">Dejar vacío para mantener contraseña actual al editar.</small>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label class="form-label" for="user-role">Rol *</label>
+          <select id="user-role" class="form-input" required>
+            <option value="vendedor">Vendedor de Salón</option>
+            <option value="admin">Administrador General</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.9rem; font-weight: 700;">
+          Guardar Usuario
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript App modules -->
+  <script src="js/api.js?v=1.0.6"></script>
+  <script src="js/ui.js?v=1.0.6"></script>
+  <script src="js/app.js?v=1.0.6"></script>
+</body>
+</html>
