@@ -274,6 +274,20 @@ const API = {
     return await response.json();
   },
 
+  async trackOrder(code) {
+    if (isUsingLocalBackup) {
+      const orders = JSON.parse(localStorage.getItem('miranda_orders') || '[]');
+      const found = orders.find(o => 
+        o.id.toLowerCase() === code.toLowerCase() || 
+        o.id.split('-')[1]?.toLowerCase() === code.toLowerCase()
+      );
+      return found || null;
+    }
+    const response = await fetch(`${API_BASE}/api/orders/track/${code}`);
+    if (response.status === 404) return null;
+    return await response.json();
+  },
+
   async createOrder(orderData) {
     if (isUsingLocalBackup) {
       const products = JSON.parse(localStorage.getItem('miranda_products'));

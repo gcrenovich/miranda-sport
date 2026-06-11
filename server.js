@@ -87,6 +87,23 @@ app.get('/api/orders', async (req, res) => {
   }
 });
 
+app.get('/api/orders/track/:code', async (req, res) => {
+  try {
+    const orders = await db.getOrders();
+    const code = req.params.code.toLowerCase();
+    const found = orders.find(o => 
+      o.id.toLowerCase() === code || 
+      o.id.split('-')[1]?.toLowerCase() === code
+    );
+    if (!found) {
+      return res.status(404).json({ error: 'Pedido no encontrado' });
+    }
+    res.json(found);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post('/api/orders', async (req, res) => {
   try {
     const { customerName, customerCuit, customerEmail, customerPhone, customerAddress, paymentMethod, items } = req.body;

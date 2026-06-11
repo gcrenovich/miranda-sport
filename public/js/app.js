@@ -69,7 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
   async function refreshData() {
     try {
       state.products = (await API.getProducts()) || [];
-      state.orders = (await API.getOrders()) || [];
+      if (state.currentUser) {
+        state.orders = (await API.getOrders()) || [];
+      } else {
+        state.orders = [];
+      }
       if (state.currentUser && state.currentUser.role === 'admin') {
         state.users = (await API.getUsers()) || [];
       }
@@ -127,17 +131,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (trackingForm) {
-      trackingForm.addEventListener('submit', (e) => {
+      trackingForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const code = trackingInput.value.trim().toLowerCase();
         
-        // Find matching order
-        const found = state.orders.find(o => 
-          o.id.toLowerCase() === code || 
-          o.id.split('-')[1]?.toLowerCase() === code
-        );
+        const submitBtn = trackingForm.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Buscando...';
+        }
 
-        UI.renderTrackingResult(found);
+        try {
+          const found = await API.trackOrder(code);
+          UI.renderTrackingResult(found);
+        } catch (err) {
+          console.error(err);
+          UI.renderTrackingResult(null);
+        } finally {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Buscar';
+          }
+        }
       });
     }
 
