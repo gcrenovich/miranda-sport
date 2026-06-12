@@ -272,8 +272,8 @@ const UI = {
     let successSalesCount = 0;
 
     orders.forEach(order => {
-      // Consider delivered or billed orders for sales analytics
-      if (order.status === 'Entregado' || order.status === 'Facturado') {
+      // Consider delivered, billed, or completed-without-invoice orders for sales analytics
+      if (['Entregado', 'Facturado', 'Completado (Sin Factura)'].includes(order.status)) {
         totalRevenue += order.subtotal; // Subtotal excludes 21% IVA tax
         successSalesCount++;
         
@@ -295,6 +295,169 @@ const UI = {
     // Gross profits margin
     const grossProfit = totalRevenue - totalCostOfGoods;
     totalGananciaEl.textContent = this.formatCurrency(grossProfit);
+
+    // ---- NEW: Daily Sales Breakdown ----
+    const dailyData = {};
+    orders.forEach(order => {
+      if (['Entregado', 'Facturado', 'Completado (Sin Factura)'].includes(order.status)) {
+        const dateObj = new Date(order.date);
+        const localDateStr = dateObj.toLocaleDateString('es-AR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        
+        if (!dailyData[localDateStr]) {
+          dailyData[localDateStr] = {
+            salesCount: 0,
+            totalNet: 0,
+            profit: 0
+          };
+        }
+        
+        dailyData[localDateStr].salesCount++;
+        dailyData[localDateStr].totalNet += order.subtotal;
+        
+        let orderCost = 0;
+        order.items.forEach(item => {
+          const originalProd = products.find(p => p.id === item.productId);
+          if (originalProd) {
+            orderCost += (originalProd.cost || 0) * item.quantity;
+          }
+        });
+        
+        dailyData[localDateStr].profit += (order.subtotal - orderCost);
+      }
+    });
+
+    const dailyTbody = document.getElementById('daily-summary-table-body');
+    if (dailyTbody) {
+      dailyTbody.innerHTML = '';
+      const sortedDays = Object.keys(dailyData).sort((a, b) => {
+        const parseDate = (dStr) => {
+          const parts = dStr.split('/');
+          return new Date(parts[2], parts[1] - 1, parts[0]);
+        };
+        return parseDate(b) - parseDate(a);
+      });
+      
+      if (sortedDays.length === 0) {
+        dailyTbody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+              No hay ventas registradas en el período seleccionado.
+            </td>
+          </tr>
+        `;
+      } else {
+        sortedDays.forEach(day => {
+          const data = dailyData[day];
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${day}</strong></td>
+            <td style="text-align: center;">${data.salesCount}</td>
+            <td style="text-align: right; font-weight: 600;">${this.formatCurrency(data.totalNet)}</td>
+            <td style="text-align: right; color: var(--color-success); font-weight: 600;">${this.formatCurrency(data.profit)}</td>
+          `;
+          dailyTbody.appendChild(tr);
+        });
+      }
+    }
+
+    // ---- NEW: Payment Methods Breakdown ----
+    const paymentCounts = {
+      transferencia: { count: 0, amount: 0 },
+      tarjeta: { count: 0, amount: 0 },
+      efectivo: { count: 0, amount: 0 }
+    };
+    let totalValidOrders = 0;
+    
+    orders.forEach(order => {
+      if (['Entregado', 'Facturado', 'Completado (Sin Factura)'].includes(order.status)) {
+        const method = (order.paymentMethod || 'transferencia').toLowerCase();
+        if (paymentCounts[method] !== undefined) {
+          paymentCounts[method].count++;
+          paymentCounts[method].amount += order.total;
+          totalValidOrders++;
+        }
+      }
+    });
+    
+    const paymentContainer = document.getElementById('payment-methods-summary');
+    if (paymentContainer) {
+      paymentContainer.innerHTML = '';
+      
+      const methods = [
+        { key: 'transferencia', label: 'Transferencia Bancaria', icon: 'fa-university' },
+        { key: 'tarjeta', label: 'Tarjeta de Crédito/Débito', icon: 'fa-credit-card' },
+        { key: 'efectivo', label: 'Efectivo / Trato Directo', icon: 'fa-money-bill-wave' }
+      ];
+      
+      methods.forEach(m => {
+        const data = paymentCounts[m.key];
+        const percent = totalValidOrders > 0 ? Math.round((data.count / totalValidOrders) * 100) : 0;
+        
+        const itemEl = document.createElement('div');
+        itemEl.className = 'distribution-item';
+        itemEl.innerHTML = `
+          <div class="distribution-meta">
+            <span><i class="fas ${m.icon}" style="width: 20px;"></i> ${m.label}</span>
+            <span>${data.count} (${percent}%) - <strong>${this.formatCurrency(data.amount)}</strong></span>
+          </div>
+          <div class="distribution-bar-bg">
+            <div class="distribution-bar-fill ${m.key}" style="width: ${percent}%;"></div>
+          </div>
+        `;
+        paymentContainer.appendChild(itemEl);
+      });
+    }
+
+    // ---- NEW: Order Statuses Breakdown ----
+    const statusCounts = {
+      'Pendiente': 0,
+      'En Proceso': 0,
+      'Entregado': 0,
+      'Facturado': 0,
+      'Completado (Sin Factura)': 0,
+      'Pendiente de Stock': 0,
+      'Cancelado': 0
+    };
+    let totalAllOrders = orders.length;
+    
+    orders.forEach(order => {
+      if (statusCounts[order.status] !== undefined) {
+        statusCounts[order.status]++;
+      }
+    });
+    
+    const statusContainer = document.getElementById('order-status-summary');
+    if (statusContainer) {
+      statusContainer.innerHTML = '';
+      
+      const statuses = [
+        { label: 'Pendiente de Aprobación', countKey: 'Pendiente', class: 'pendiente' },
+        { label: 'En Preparación / Proceso', countKey: 'En Proceso', class: 'en-proceso' },
+        { label: 'Entregados (Pendiente Facturación)', countKey: 'Entregado', class: 'entregado' },
+        { label: 'Facturados (AFIP)', countKey: 'Facturado', class: 'facturado' },
+        { label: 'Completados sin Factura', countKey: 'Completado (Sin Factura)', class: 'completado-sin-factura' },
+        { label: 'Pendientes de Stock', countKey: 'Pendiente de Stock', class: 'pendiente-de-stock' },
+        { label: 'Cancelados', countKey: 'Cancelado', class: 'cancelado' }
+      ];
+      
+      statuses.forEach(s => {
+        const count = statusCounts[s.countKey] || 0;
+        const percent = totalAllOrders > 0 ? Math.round((count / totalAllOrders) * 100) : 0;
+        
+        const itemEl = document.createElement('div');
+        itemEl.className = 'distribution-item';
+        itemEl.innerHTML = `
+          <div class="distribution-meta">
+            <span>${s.label}</span>
+            <span>${count} (${percent}%)</span>
+          </div>
+          <div class="distribution-bar-bg">
+            <div class="distribution-bar-fill ${s.class}" style="width: ${percent}%;"></div>
+          </div>
+        `;
+        statusContainer.appendChild(itemEl);
+      });
+    }
   },
 
   // Render seller inventory control list (CRUD table)

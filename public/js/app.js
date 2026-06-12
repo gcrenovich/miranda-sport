@@ -14,7 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
     settings: null,
     users: [],
     currentUser: null,
-    editingUserId: null
+    editingUserId: null,
+    dateFilter: {
+      start: '',
+      end: '',
+      range: 'all'
+    }
   };
 
   let deferredPrompt = null;
@@ -355,6 +360,95 @@ document.addEventListener('DOMContentLoaded', () => {
           const targetPanel = btn.getAttribute('data-panel');
           switchAdminPanel(targetPanel);
         }
+      });
+    }
+
+    // Date filter listeners
+    const dateStartInput = document.getElementById('date-start');
+    const dateEndInput = document.getElementById('date-end');
+    const clearDatesBtn = document.getElementById('clear-dates-btn');
+    const quickDateButtons = document.querySelectorAll('.quick-date-btn');
+
+    function updateQuickDateButtonsActive(range) {
+      quickDateButtons.forEach(btn => {
+        if (btn.getAttribute('data-range') === range) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    if (dateStartInput && dateEndInput) {
+      const handleCustomDateChange = () => {
+        state.dateFilter.start = dateStartInput.value;
+        state.dateFilter.end = dateEndInput.value;
+        state.dateFilter.range = 'custom';
+        updateQuickDateButtonsActive('custom');
+        renderAll();
+      };
+
+      dateStartInput.addEventListener('change', handleCustomDateChange);
+      dateEndInput.addEventListener('change', handleCustomDateChange);
+    }
+
+    quickDateButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const range = btn.getAttribute('data-range');
+        state.dateFilter.range = range;
+        
+        const today = new Date();
+        let startVal = '';
+        let endVal = '';
+
+        if (range === 'today') {
+          const yyyy = today.getFullYear();
+          const mm = String(today.getMonth() + 1).padStart(2, '0');
+          const dd = String(today.getDate()).padStart(2, '0');
+          startVal = `${yyyy}-${mm}-${dd}`;
+          endVal = `${yyyy}-${mm}-${dd}`;
+        } else if (range === 'week') {
+          const pastWeek = new Date();
+          pastWeek.setDate(today.getDate() - 7);
+          
+          const yyyy = today.getFullYear();
+          const mm = String(today.getMonth() + 1).padStart(2, '0');
+          const dd = String(today.getDate()).padStart(2, '0');
+          endVal = `${yyyy}-${mm}-${dd}`;
+          
+          const syyyy = pastWeek.getFullYear();
+          const smm = String(pastWeek.getMonth() + 1).padStart(2, '0');
+          const sdd = String(pastWeek.getDate()).padStart(2, '0');
+          startVal = `${syyyy}-${smm}-${sdd}`;
+        } else if (range === 'month') {
+          const yyyy = today.getFullYear();
+          const mm = String(today.getMonth() + 1).padStart(2, '0');
+          startVal = `${yyyy}-${mm}-01`;
+          
+          const lastDay = new Date(yyyy, today.getMonth() + 1, 0).getDate();
+          endVal = `${yyyy}-${mm}-${String(lastDay).padStart(2, '0')}`;
+        }
+
+        if (dateStartInput) dateStartInput.value = startVal;
+        if (dateEndInput) dateEndInput.value = endVal;
+        
+        state.dateFilter.start = startVal;
+        state.dateFilter.end = endVal;
+        
+        updateQuickDateButtonsActive(range);
+        renderAll();
+      });
+    });
+
+    if (clearDatesBtn) {
+      clearDatesBtn.addEventListener('click', () => {
+        if (dateStartInput) dateStartInput.value = '';
+        if (dateEndInput) dateEndInput.value = '';
+        state.dateFilter.start = '';
+        state.dateFilter.end = '';
+        state.dateFilter.range = 'all';
+        updateQuickDateButtonsActive('all');
+        renderAll();
       });
     }
 
@@ -1023,8 +1117,22 @@ document.addEventListener('DOMContentLoaded', () => {
     renderFilteredStore();
     UI.renderCart(state.cart, handleUpdateCartQuantity, handleRemoveCartItem);
     
+    // Filter orders by date range for the dashboard overview statistics
+    let filteredOrders = [...state.orders];
+    const { start, end } = state.dateFilter;
+    if (start) {
+      // Set to start of the day in local time
+      const startDate = new Date(start + 'T00:00:00');
+      filteredOrders = filteredOrders.filter(o => new Date(o.date) >= startDate);
+    }
+    if (end) {
+      // Set to end of the day in local time
+      const endDate = new Date(end + 'T23:59:59');
+      filteredOrders = filteredOrders.filter(o => new Date(o.date) <= endDate);
+    }
+
     // Admin renders
-    UI.renderDashboardStats(state.products, state.orders);
+    UI.renderDashboardStats(state.products, filteredOrders);
     UI.renderInventoryTable(state.products, handleInventoryEdit, handleInventoryDelete);
     UI.renderOrdersTable(state.products, state.orders, handleOrderUpdateStatus, handleOrderInvoice, handleOrderCompleteNoInvoice);
     

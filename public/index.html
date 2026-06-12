@@ -175,7 +175,7 @@
               <i class="fas fa-chevron-down"></i> Ver Catálogo
             </a>
             <button id="install-pwa-btn-hero" class="btn btn-secondary btn-lg install-pwa-btn" style="display: none; align-items: center; gap: 0.5rem; border: none; cursor: pointer;">
-              <i class="fab fa-android" style="color: #3ddc84; font-size: 1.25rem;"></i> Instalar App Móvil
+              <i class="fas fa-download" style="color: var(--accent-color); font-size: 1.2rem;"></i> Instalar Aplicación Web
             </button>
           </div>
         </div>
@@ -280,6 +280,82 @@
                   <i class="fas fa-dumbbell"></i>
                 </div>
               </div>
+            </div>
+
+            <!-- Filtro de Rango de Fechas -->
+            <div class="glass-panel" style="margin-top: 2rem; margin-bottom: 2rem;">
+              <div class="date-filter-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                <h3 style="font-weight: 700; font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem; margin: 0;">
+                  <i class="fas fa-calendar-alt" style="color: var(--accent-color);"></i> Filtrar por Rango de Fechas
+                </h3>
+                <div class="quick-date-selector" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <button type="button" class="btn btn-secondary quick-date-btn active" data-range="all" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Todos</button>
+                  <button type="button" class="btn btn-secondary quick-date-btn" data-range="today" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Hoy</button>
+                  <button type="button" class="btn btn-secondary quick-date-btn" data-range="week" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Últimos 7 días</button>
+                  <button type="button" class="btn btn-secondary quick-date-btn" data-range="month" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Este Mes</button>
+                </div>
+              </div>
+              <div class="date-inputs-row" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <div class="form-group" style="margin-bottom: 0; display: flex; align-items: center; gap: 0.5rem;">
+                  <label for="date-start" style="font-size: 0.9rem; font-weight: 600; color: var(--text-secondary);">Desde:</label>
+                  <input type="date" id="date-start" class="form-input" style="padding: 0.4rem 0.75rem;">
+                </div>
+                <div class="form-group" style="margin-bottom: 0; display: flex; align-items: center; gap: 0.5rem;">
+                  <label for="date-end" style="font-size: 0.9rem; font-weight: 600; color: var(--text-secondary);">Hasta:</label>
+                  <input type="date" id="date-end" class="form-input" style="padding: 0.4rem 0.75rem;">
+                </div>
+                <button type="button" id="clear-dates-btn" class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.85rem; height: 36px;">
+                  <i class="fas fa-undo"></i> Limpiar
+                </button>
+              </div>
+            </div>
+
+            <!-- Reportes y Distribución en Grid de dos columnas -->
+            <div class="report-grid" style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; margin-top: 2rem;">
+              
+              <!-- Reporte Diario -->
+              <div class="glass-panel" style="padding: 1.5rem;">
+                <h3 style="font-weight: 700; font-size: 1.15rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; margin: 0;">
+                  <i class="fas fa-chart-line" style="color: var(--color-success);"></i> Resumen Diario de Ventas
+                </h3>
+                <div class="table-wrapper" style="margin-bottom: 0; max-height: 350px; overflow-y: auto;">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Fecha</th>
+                        <th style="text-align: center;">Ventas</th>
+                        <th style="text-align: right;">Total Neto</th>
+                        <th style="text-align: right;">Ganancia</th>
+                      </tr>
+                    </thead>
+                    <tbody id="daily-summary-table-body">
+                      <!-- Rendered by UI.js -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Distribución y Conteo (Metodos de pago y Estado) -->
+              <div class="glass-panel" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem;">
+                <div>
+                  <h3 style="font-weight: 700; font-size: 1.15rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; margin: 0;">
+                    <i class="fas fa-credit-card" style="color: var(--color-info);"></i> Métodos de Pago
+                  </h3>
+                  <div id="payment-methods-summary" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <!-- Rendered by UI.js -->
+                  </div>
+                </div>
+
+                <div style="border-top: 1px solid var(--border-glass); padding-top: 1.25rem;">
+                  <h3 style="font-weight: 700; font-size: 1.15rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; margin: 0;">
+                    <i class="fas fa-tasks" style="color: var(--color-warning);"></i> Estados de Pedido
+                  </h3>
+                  <div id="order-status-summary" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <!-- Rendered by UI.js -->
+                  </div>
+                </div>
+              </div>
+
             </div>
 
             <!-- Business Guidance note -->
@@ -439,7 +515,7 @@
   <footer>
     <p>&copy; 2026 Miranda Sport - Todos los derechos reservados. Diseñado para alto rendimiento. | 
        <button id="install-pwa-btn-footer" class="install-pwa-btn" style="display: none; color: var(--accent-color); font-weight: 700; text-decoration: none; margin-left: 0.5rem; align-items: center; gap: 0.35rem; background: none; border: none; cursor: pointer; font-family: inherit; font-size: inherit; padding: 0;">
-         <i class="fab fa-android"></i> Instalar App Móvil
+         <i class="fas fa-download"></i> Instalar Aplicación Web
        </button>
     </p>
   </footer>
