@@ -94,67 +94,17 @@ function initLocalBackup() {
   }
 
   if (!localStorage.getItem('miranda_orders')) {
-    const defaultOrders = [
-      {
-        "id": "ord-1",
-        "customerName": "Gimnasio Iron Fists",
-        "customerCuit": "30-71458932-5",
-        "customerEmail": "contacto@ironfists.com",
-        "customerPhone": "11-4567-8901",
-        "customerAddress": "Av. Cabildo 2450, CABA",
-        "paymentMethod": "transferencia",
-        "items": [
-          {
-            "productId": "prod-3",
-            "name": "Kit Mancuernas Ajustables (2.5 a 24kg)",
-            "price": 180000,
-            "quantity": 2
-          },
-          {
-            "productId": "prod-4",
-            "name": "Barra Olímpica Profesional 20kg",
-            "price": 120000,
-            "quantity": 1
-          }
-        ],
-        "subtotal": 480000,
-        "tax": 100800,
-        "total": 580800,
-        "status": "Entregado",
-        "date": "2026-06-08T14:30:22.000Z",
-        "invoiceNumber": "0001-00000104",
-        "invoiceType": "A"
-      },
-      {
-        "id": "ord-2",
-        "customerName": "Mariana López",
-        "customerCuit": "27-35987123-4",
-        "customerEmail": "mariana.lopez@gmail.com",
-        "customerPhone": "341-555-1234",
-        "customerAddress": "Pellegrini 1500, Rosario",
-        "paymentMethod": "efectivo",
-        "items": [
-          {
-            "productId": "prod-6",
-            "name": "Colchoneta Fitness Alta Densidad",
-            "price": 15000,
-            "quantity": 2
-          },
-          {
-            "productId": "prod-7",
-            "name": "Banda Elástica de Látex Cerrada (Fuerte)",
-            "price": 8000,
-            "quantity": 3
-          }
-        ],
-        "subtotal": 54000,
-        "tax": 11340,
-        "total": 65340,
-        "status": "Pendiente",
-        "date": "2026-06-09T16:15:00.000Z"
+    localStorage.setItem('miranda_orders', JSON.stringify([]));
+  } else {
+    // Automatically clear any old example orders so the user starts completely fresh
+    try {
+      const savedOrders = JSON.parse(localStorage.getItem('miranda_orders'));
+      if (Array.isArray(savedOrders) && savedOrders.some(o => o.customerName === "Gimnasio Iron Fists" || o.customerName === "Mariana López")) {
+        localStorage.setItem('miranda_orders', JSON.stringify([]));
       }
-    ];
-    localStorage.setItem('miranda_orders', JSON.stringify(defaultOrders));
+    } catch (e) {
+      console.error('Error auto-clearing example orders:', e);
+    }
   }
 
   if (!localStorage.getItem('miranda_users')) {

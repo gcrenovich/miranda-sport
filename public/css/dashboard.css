@@ -523,7 +523,7 @@ tr:hover td {
     width: 100% !important;
     height: auto !important;
     background: white !important;
-    display: flex !important;
+    display: block !important;
     opacity: 1 !important;
     pointer-events: auto !important;
     backdrop-filter: none !important;
@@ -540,6 +540,7 @@ tr:hover td {
     box-shadow: none !important;
     background: white !important;
     transform: none !important;
+    display: block !important;
   }
 
   /* Hide close buttons and print buttons */
