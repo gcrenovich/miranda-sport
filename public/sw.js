@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miranda-sport-v1.0.6';
+const CACHE_NAME = 'miranda-sport-v1.0.7';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -10,8 +10,7 @@ const ASSETS_TO_CACHE = [
   '/js/ui.js?v=1.0.6',
   '/js/app.js?v=1.0.6',
   '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/icon.svg'
 ];
 
 // Install Event: Cache resources
