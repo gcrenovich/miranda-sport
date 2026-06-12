@@ -87,7 +87,18 @@
     "heroDesc": "Equipamiento de alto rendimiento disenado para gimnasios exigentes.",
     "heroImage": "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=800&auto=format&fit=crop",
     "themeColor": "pink",
-    "glowEffects": false
+    "glowEffects": false,
+    "sellerName": "MIRANDA SPORT",
+    "sellerCuit": "30-71850122-3",
+    "sellerAddress": "Av. del Libertador 4200, CABA, Argentina",
+    "sellerPhone": "011-4892-7491",
+    "sellerEmail": "ventas@mirandasport.com.ar",
+    "sellerIva": "IVA Responsable Inscripto",
+    "sellerActivityStart": "01/03/2021",
+    "showPhoneOnReceipt": true,
+    "showEmailOnReceipt": true,
+    "showAddressOnReceipt": true,
+    "showCuitOnReceipt": true
   },
   "users": [
     {

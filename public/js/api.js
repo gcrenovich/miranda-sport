@@ -377,6 +377,17 @@ const API = {
     return await response.json();
   },
 
+  async clearOrders() {
+    if (isUsingLocalBackup) {
+      localStorage.setItem('miranda_orders', JSON.stringify([]));
+      return { message: "Todos los pedidos fueron eliminados" };
+    }
+    const response = await fetch(`${API_BASE}/api/orders`, {
+      method: 'DELETE'
+    });
+    return await response.json();
+  },
+
   async getSettings() {
     if (isUsingLocalBackup) {
       if (!localStorage.getItem('miranda_settings')) {
@@ -385,9 +396,49 @@ const API = {
           heroDesc: "Fabricamos e importamos instrumentos deportivos de máxima durabilidad y diseño ergonómico para gimnasios y deportistas profesionales.",
           heroImage: "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=800&auto=format&fit=crop",
           themeColor: "pink",
-          glowEffects: false
+          glowEffects: false,
+          sellerName: "MIRANDA SPORT",
+          sellerCuit: "30-71850122-3",
+          sellerAddress: "Av. del Libertador 4200, CABA, Argentina",
+          sellerPhone: "011-4892-7491",
+          sellerEmail: "ventas@mirandasport.com.ar",
+          sellerIva: "IVA Responsable Inscripto",
+          sellerActivityStart: "01/03/2021",
+          showPhoneOnReceipt: true,
+          showEmailOnReceipt: true,
+          showAddressOnReceipt: true,
+          showCuitOnReceipt: true
         };
         localStorage.setItem('miranda_settings', JSON.stringify(defaultSettings));
+      } else {
+        try {
+          const current = JSON.parse(localStorage.getItem('miranda_settings'));
+          const defaultSellerSettings = {
+            sellerName: "MIRANDA SPORT",
+            sellerCuit: "30-71850122-3",
+            sellerAddress: "Av. del Libertador 4200, CABA, Argentina",
+            sellerPhone: "011-4892-7491",
+            sellerEmail: "ventas@mirandasport.com.ar",
+            sellerIva: "IVA Responsable Inscripto",
+            sellerActivityStart: "01/03/2021",
+            showPhoneOnReceipt: true,
+            showEmailOnReceipt: true,
+            showAddressOnReceipt: true,
+            showCuitOnReceipt: true
+          };
+          let updated = false;
+          for (const key in defaultSellerSettings) {
+            if (current[key] === undefined) {
+              current[key] = defaultSellerSettings[key];
+              updated = true;
+            }
+          }
+          if (updated) {
+            localStorage.setItem('miranda_settings', JSON.stringify(current));
+          }
+        } catch (e) {
+          console.error('Error merging local settings:', e);
+        }
       }
       return JSON.parse(localStorage.getItem('miranda_settings'));
     }

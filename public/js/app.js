@@ -545,7 +545,18 @@ document.addEventListener('DOMContentLoaded', () => {
           heroDesc: document.getElementById('custom-hero-desc').value.trim(),
           heroImage: document.getElementById('custom-hero-image').value.trim(),
           themeColor: document.getElementById('custom-theme-color').value,
-          glowEffects: document.getElementById('custom-glow-effects').checked
+          glowEffects: document.getElementById('custom-glow-effects').checked,
+          sellerName: document.getElementById('custom-seller-name').value.trim(),
+          sellerCuit: document.getElementById('custom-seller-cuit').value.trim(),
+          sellerIva: document.getElementById('custom-seller-iva').value.trim(),
+          sellerActivityStart: document.getElementById('custom-seller-activity-start').value.trim(),
+          sellerAddress: document.getElementById('custom-seller-address').value.trim(),
+          sellerPhone: document.getElementById('custom-seller-phone').value.trim(),
+          sellerEmail: document.getElementById('custom-seller-email').value.trim(),
+          showCuitOnReceipt: document.getElementById('custom-show-cuit').checked,
+          showAddressOnReceipt: document.getElementById('custom-show-address').checked,
+          showPhoneOnReceipt: document.getElementById('custom-show-phone').checked,
+          showEmailOnReceipt: document.getElementById('custom-show-email').checked
         };
 
         try {
@@ -558,6 +569,35 @@ document.addEventListener('DOMContentLoaded', () => {
         } finally {
           submitBtn.disabled = false;
           submitBtn.textContent = 'Guardar Personalización';
+        }
+      });
+    }
+
+    // Clear Orders Listener
+    const clearOrdersBtn = document.getElementById('admin-clear-orders-btn');
+    if (clearOrdersBtn) {
+      clearOrdersBtn.addEventListener('click', async () => {
+        const confirmClear = confirm('¿Está seguro de que desea eliminar permanentemente todo el historial de pedidos? Esta acción no se puede deshacer y reiniciará el contador de facturación.');
+        if (!confirmClear) return;
+
+        try {
+          clearOrdersBtn.disabled = true;
+          clearOrdersBtn.textContent = 'Borrando...';
+          
+          await API.clearOrders();
+          
+          // Re-fetch and re-render orders and dashboard stats
+          state.orders = await API.getOrders();
+          UI.renderDashboardStats(state.products, state.orders);
+          UI.renderOrdersTable(state.products, state.orders, handleOrderUpdateStatus, handleOrderInvoice, handleOrderCompleteNoInvoice);
+          
+          UI.showToast('Historial Borrado', 'Todos los pedidos han sido eliminados correctamente.', 'success');
+        } catch (err) {
+          console.error(err);
+          UI.showToast('Error', 'No se pudieron borrar los pedidos.', 'danger');
+        } finally {
+          clearOrdersBtn.disabled = false;
+          clearOrdersBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Borrar Historial de Pedidos';
         }
       });
     }
@@ -967,6 +1007,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         document.getElementById('custom-theme-color').value = state.settings.themeColor || 'pink';
         document.getElementById('custom-glow-effects').checked = state.settings.glowEffects === true;
+
+        // Populate seller configuration details
+        document.getElementById('custom-seller-name').value = state.settings.sellerName || 'MIRANDA SPORT';
+        document.getElementById('custom-seller-cuit').value = state.settings.sellerCuit || '30-71850122-3';
+        document.getElementById('custom-seller-iva').value = state.settings.sellerIva || 'IVA Responsable Inscripto';
+        document.getElementById('custom-seller-activity-start').value = state.settings.sellerActivityStart || '01/03/2021';
+        document.getElementById('custom-seller-address').value = state.settings.sellerAddress || 'Av. del Libertador 4200, CABA, Argentina';
+        document.getElementById('custom-seller-phone').value = state.settings.sellerPhone || '011-4892-7491';
+        document.getElementById('custom-seller-email').value = state.settings.sellerEmail || 'ventas@mirandasport.com.ar';
+        document.getElementById('custom-show-cuit').checked = state.settings.showCuitOnReceipt !== false;
+        document.getElementById('custom-show-address').checked = state.settings.showAddressOnReceipt !== false;
+        document.getElementById('custom-show-phone').checked = state.settings.showPhoneOnReceipt !== false;
+        document.getElementById('custom-show-email').checked = state.settings.showEmailOnReceipt !== false;
         
         // Highlight correct color pill
         document.querySelectorAll('.color-pill').forEach(pill => {

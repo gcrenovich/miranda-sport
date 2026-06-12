@@ -690,6 +690,23 @@ const UI = {
     }
 
     const isNoInvoice = order.status === 'Completado (Sin Factura)';
+    const settings = this.currentSettings || {};
+    const sellerName = settings.sellerName || "MIRANDA SPORT";
+    const sellerCuit = settings.sellerCuit || "30-71850122-3";
+    const sellerAddress = settings.sellerAddress || "Av. del Libertador 4200, CABA, Argentina";
+    const sellerPhone = settings.sellerPhone || "011-4892-7491";
+    const sellerEmail = settings.sellerEmail || "ventas@mirandasport.com.ar";
+    const sellerIva = settings.sellerIva || "IVA Responsable Inscripto";
+    const sellerActivityStart = settings.sellerActivityStart || "01/03/2021";
+    const showPhone = settings.showPhoneOnReceipt !== false;
+    const showEmail = settings.showEmailOnReceipt !== false;
+    const showAddress = settings.showAddressOnReceipt !== false;
+    const showCuit = settings.showCuitOnReceipt !== false;
+
+    let contactParts = [];
+    if (showPhone && sellerPhone) contactParts.push(`Tel: ${sellerPhone}`);
+    if (showEmail && sellerEmail) contactParts.push(sellerEmail);
+    const contactLine = contactParts.length > 0 ? `${contactParts.join(' / ')}<br>` : '';
 
     // Set structure inside the modal overlay
     const itemsRowsHtml = order.items.map((item, index) => {
@@ -729,7 +746,7 @@ const UI = {
               <small style="color: #666; font-size: 8px;">Comprobante de uso interno / transacción exenta por trato directo con el vendedor.</small>
             </div>
             <div style="text-align: right;">
-              <strong>Miranda Sport</strong><br>
+              <strong>${sellerName}</strong><br>
               <small style="color: #666; font-size: 8px;">¡Muchas gracias por su confianza!</small>
             </div>
           </div>
@@ -779,12 +796,12 @@ const UI = {
           <!-- 1. Comp Header -->
           <div class="invoice-header-box">
             <div class="invoice-header-left">
-              <h1>MIRANDA SPORT</h1>
+              <h1>${sellerName}</h1>
               <div style="font-size: 10px; color: #444;">
                 Equipamiento de Fitness y Gimnasios de Alta Gama<br>
-                Av. del Libertador 4200, CABA, Argentina<br>
-                Tel: 011-4892-7491 / ventas@mirandasport.com.ar<br>
-                IVA Responsable Inscripto
+                ${showAddress ? `${sellerAddress}<br>` : ''}
+                ${contactLine}
+                ${sellerIva}
               </div>
             </div>
             
@@ -800,9 +817,9 @@ const UI = {
               <div>
                 <strong>Nº Comp.:</strong> ${compNum}<br>
                 <strong>Fecha Comp.:</strong> ${order.date.split('T')[0]}<br>
-                <strong>CUIT:</strong> 30-71850122-3<br>
-                <strong>Ingr. Brutos:</strong> 30-71850122-3<br>
-                <strong>Inic. Actividades:</strong> 01/03/2021
+                ${showCuit ? `<strong>CUIT:</strong> ${sellerCuit}<br>
+                <strong>Ingr. Brutos:</strong> ${sellerCuit}<br>` : ''}
+                <strong>Inic. Actividades:</strong> ${sellerActivityStart}
               </div>
             </div>
           </div>
@@ -944,6 +961,7 @@ const UI = {
   // Apply customizable storefront settings (texts, images, themes, glows)
   applyStoreSettings(settings) {
     if (!settings) return;
+    this.currentSettings = settings;
 
     // Apply texts
     const titleEl = document.querySelector('.hero-title');

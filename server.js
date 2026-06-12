@@ -169,6 +169,15 @@ app.patch('/api/orders/:id', async (req, res) => {
   }
 });
 
+app.delete('/api/orders', async (req, res) => {
+  try {
+    const result = await db.clearOrders();
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Mock AFIP Billing Endpoint
 app.post('/api/orders/:id/invoice', async (req, res) => {
   try {

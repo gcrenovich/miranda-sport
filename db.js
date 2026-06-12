@@ -58,7 +58,18 @@ const SettingsSchema = new mongoose.Schema({
   heroDesc: { type: String, default: "Fabricamos e importamos instrumentos deportivos de máxima durabilidad y diseño ergonómico..." },
   heroImage: { type: String, default: "" },
   themeColor: { type: String, default: "pink" },
-  glowEffects: { type: Boolean, default: false }
+  glowEffects: { type: Boolean, default: false },
+  sellerName: { type: String, default: "MIRANDA SPORT" },
+  sellerCuit: { type: String, default: "30-71850122-3" },
+  sellerAddress: { type: String, default: "Av. del Libertador 4200, CABA, Argentina" },
+  sellerPhone: { type: String, default: "011-4892-7491" },
+  sellerEmail: { type: String, default: "ventas@mirandasport.com.ar" },
+  sellerIva: { type: String, default: "IVA Responsable Inscripto" },
+  sellerActivityStart: { type: String, default: "01/03/2021" },
+  showPhoneOnReceipt: { type: Boolean, default: true },
+  showEmailOnReceipt: { type: Boolean, default: true },
+  showAddressOnReceipt: { type: Boolean, default: true },
+  showCuitOnReceipt: { type: Boolean, default: true }
 }, { timestamps: true });
 
 // Mongoose Models
@@ -183,7 +194,18 @@ const db = {
             heroDesc: "Fabricamos e importamos instrumentos deportivos de máxima durabilidad y diseño ergonómico para gimnasios y deportistas profesionales.",
             heroImage: "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=800&auto=format&fit=crop",
             themeColor: "pink",
-            glowEffects: false
+            glowEffects: false,
+            sellerName: "MIRANDA SPORT",
+            sellerCuit: "30-71850122-3",
+            sellerAddress: "Av. del Libertador 4200, CABA, Argentina",
+            sellerPhone: "011-4892-7491",
+            sellerEmail: "ventas@mirandasport.com.ar",
+            sellerIva: "IVA Responsable Inscripto",
+            sellerActivityStart: "01/03/2021",
+            showPhoneOnReceipt: true,
+            showEmailOnReceipt: true,
+            showAddressOnReceipt: true,
+            showCuitOnReceipt: true
           });
         }
       } else if (settingsCount === 0) {
@@ -193,7 +215,18 @@ const db = {
           heroDesc: "Fabricamos e importamos instrumentos deportivos de máxima durabilidad y diseño ergonómico para gimnasios y deportistas profesionales.",
           heroImage: "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=800&auto=format&fit=crop",
           themeColor: "pink",
-          glowEffects: false
+          glowEffects: false,
+          sellerName: "MIRANDA SPORT",
+          sellerCuit: "30-71850122-3",
+          sellerAddress: "Av. del Libertador 4200, CABA, Argentina",
+          sellerPhone: "011-4892-7491",
+          sellerEmail: "ventas@mirandasport.com.ar",
+          sellerIva: "IVA Responsable Inscripto",
+          sellerActivityStart: "01/03/2021",
+          showPhoneOnReceipt: true,
+          showEmailOnReceipt: true,
+          showAddressOnReceipt: true,
+          showCuitOnReceipt: true
         });
       }
     } catch (error) {
@@ -332,6 +365,18 @@ const db = {
     }
   },
 
+  async clearOrders() {
+    if (useMongoDB) {
+      await Order.deleteMany({});
+      return { message: "Todos los pedidos fueron eliminados" };
+    } else {
+      const local = readLocalDB();
+      local.orders = [];
+      writeLocalDB(local);
+      return { message: "Todos los pedidos fueron eliminados" };
+    }
+  },
+
   // 3. SETTINGS METHODS
   async getSettings() {
     const defaultSettings = {
@@ -339,7 +384,18 @@ const db = {
       heroDesc: "Fabricamos e importamos instrumentos deportivos de máxima durabilidad y diseño ergonómico para gimnasios y deportistas profesionales.",
       heroImage: "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=800&auto=format&fit=crop",
       themeColor: "pink",
-      glowEffects: false
+      glowEffects: false,
+      sellerName: "MIRANDA SPORT",
+      sellerCuit: "30-71850122-3",
+      sellerAddress: "Av. del Libertador 4200, CABA, Argentina",
+      sellerPhone: "011-4892-7491",
+      sellerEmail: "ventas@mirandasport.com.ar",
+      sellerIva: "IVA Responsable Inscripto",
+      sellerActivityStart: "01/03/2021",
+      showPhoneOnReceipt: true,
+      showEmailOnReceipt: true,
+      showAddressOnReceipt: true,
+      showCuitOnReceipt: true
     };
 
     if (useMongoDB) {
