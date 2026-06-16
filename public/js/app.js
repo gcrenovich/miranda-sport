@@ -556,7 +556,9 @@ document.addEventListener('DOMContentLoaded', () => {
           showCuitOnReceipt: document.getElementById('custom-show-cuit').checked,
           showAddressOnReceipt: document.getElementById('custom-show-address').checked,
           showPhoneOnReceipt: document.getElementById('custom-show-phone').checked,
-          showEmailOnReceipt: document.getElementById('custom-show-email').checked
+          showEmailOnReceipt: document.getElementById('custom-show-email').checked,
+          contactWhatsapp: document.getElementById('custom-contact-whatsapp').value.trim(),
+          contactInstagram: document.getElementById('custom-contact-instagram').value.trim()
         };
 
         try {
@@ -721,6 +723,37 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.disabled = true;
     submitBtn.textContent = 'Enviando Pedido...';
 
+    const phoneVal = document.getElementById('cust-phone').value.trim();
+    const cleanPhone = phoneVal.replace(/[\s\-\+\(\)]/g, '');
+    if (cleanPhone.length < 8) {
+      UI.showToast('Teléfono Inválido', 'El teléfono de contacto debe tener al menos 8 números.', 'warning');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Confirmar Pedido';
+      return;
+    }
+    if (!/^\d+$/.test(cleanPhone)) {
+      UI.showToast('Teléfono Inválido', 'El teléfono solo debe contener números.', 'warning');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Confirmar Pedido';
+      return;
+    }
+
+    const emailVal = document.getElementById('cust-email').value.trim();
+    if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+      UI.showToast('Email Inválido', 'Ingrese una dirección de correo válida.', 'warning');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Confirmar Pedido';
+      return;
+    }
+
+    const addressVal = document.getElementById('cust-address').value.trim();
+    if (addressVal.length < 5) {
+      UI.showToast('Dirección Corta', 'Ingrese una dirección de entrega válida y detallada.', 'warning');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Confirmar Pedido';
+      return;
+    }
+
     const orderData = {
       customerName: document.getElementById('cust-name').value.trim(),
       customerCuit: document.getElementById('cust-cuit').value.trim() || '20-00000000-9',
@@ -797,6 +830,33 @@ document.addEventListener('DOMContentLoaded', () => {
       image: document.getElementById('prod-image').value.trim() || 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=600&auto=format&fit=crop',
       description: document.getElementById('prod-desc').value.trim()
     };
+
+    if (productData.price <= 0) {
+      UI.showToast('Precio Inválido', 'El precio de venta debe ser mayor a 0.', 'warning');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Guardar Producto';
+      return;
+    }
+    if (productData.cost < 0) {
+      UI.showToast('Costo Inválido', 'El precio de costo no puede ser negativo.', 'warning');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Guardar Producto';
+      return;
+    }
+    if (productData.stock < 0) {
+      UI.showToast('Stock Inválido', 'El stock no puede ser negativo.', 'warning');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Guardar Producto';
+      return;
+    }
+    if (productData.cost > productData.price) {
+      const confirmLoss = confirm('Alerta: El precio de costo es mayor que el precio de venta (pérdida de margen). ¿Desea guardar el producto igualmente?');
+      if (!confirmLoss) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Guardar Producto';
+        return;
+      }
+    }
 
     try {
       if (state.editingProductId) {
@@ -1020,6 +1080,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('custom-show-address').checked = state.settings.showAddressOnReceipt !== false;
         document.getElementById('custom-show-phone').checked = state.settings.showPhoneOnReceipt !== false;
         document.getElementById('custom-show-email').checked = state.settings.showEmailOnReceipt !== false;
+        document.getElementById('custom-contact-whatsapp').value = state.settings.contactWhatsapp || '5491148927491';
+        document.getElementById('custom-contact-instagram').value = state.settings.contactInstagram || 'mirandasport.ok';
         
         // Highlight correct color pill
         document.querySelectorAll('.color-pill').forEach(pill => {
@@ -1135,6 +1197,31 @@ document.addEventListener('DOMContentLoaded', () => {
       password: document.getElementById('user-password').value,
       role: document.getElementById('user-role').value
     };
+
+    if (userData.username.length < 3) {
+      UI.showToast('Usuario Corto', 'El nombre de usuario debe tener al menos 3 caracteres.', 'warning');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Guardar Usuario';
+      return;
+    }
+    if (/\s/.test(userData.username)) {
+      UI.showToast('Usuario Inválido', 'El nombre de usuario no puede contener espacios.', 'warning');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Guardar Usuario';
+      return;
+    }
+    if (!state.editingUserId && userData.password.length < 4) {
+      UI.showToast('Contraseña Corta', 'La contraseña debe tener al menos 4 caracteres.', 'warning');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Guardar Usuario';
+      return;
+    }
+    if (state.editingUserId && userData.password !== '' && userData.password.length < 4) {
+      UI.showToast('Contraseña Corta', 'La nueva contraseña debe tener al menos 4 caracteres.', 'warning');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Guardar Usuario';
+      return;
+    }
 
     try {
       if (state.editingUserId) {

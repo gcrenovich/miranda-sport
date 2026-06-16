@@ -963,6 +963,51 @@ const UI = {
     if (!settings) return;
     this.currentSettings = settings;
 
+    // Apply social contact details (WhatsApp, Instagram, Email)
+    const cleanWhatsapp = settings.contactWhatsapp ? settings.contactWhatsapp.trim().replace(/\D/g, '') : '';
+    
+    const floatWaBtn = document.getElementById('whatsapp-floating-btn');
+    if (floatWaBtn) {
+      if (cleanWhatsapp) {
+        floatWaBtn.href = `https://wa.me/${cleanWhatsapp}`;
+        floatWaBtn.style.display = 'flex';
+      } else {
+        floatWaBtn.style.display = 'none';
+      }
+    }
+
+    const footerWa = document.getElementById('footer-link-whatsapp');
+    if (footerWa) {
+      if (cleanWhatsapp) {
+        footerWa.href = `https://wa.me/${cleanWhatsapp}`;
+        footerWa.style.display = 'inline-block';
+      } else {
+        footerWa.style.display = 'none';
+      }
+    }
+
+    const footerIg = document.getElementById('footer-link-instagram');
+    if (footerIg) {
+      const cleanIg = settings.contactInstagram ? settings.contactInstagram.trim().replace(/^@/, '') : '';
+      if (cleanIg) {
+        footerIg.href = `https://instagram.com/${cleanIg}`;
+        footerIg.style.display = 'inline-block';
+      } else {
+        footerIg.style.display = 'none';
+      }
+    }
+
+    const footerEmail = document.getElementById('footer-link-email');
+    if (footerEmail) {
+      const email = settings.sellerEmail || '';
+      if (email) {
+        footerEmail.href = `mailto:${email.trim()}`;
+        footerEmail.style.display = 'inline-block';
+      } else {
+        footerEmail.style.display = 'none';
+      }
+    }
+
     // Apply texts
     const titleEl = document.querySelector('.hero-title');
     if (titleEl && settings.heroTitle) {

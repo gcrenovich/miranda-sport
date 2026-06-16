@@ -98,7 +98,9 @@
     "showPhoneOnReceipt": true,
     "showEmailOnReceipt": true,
     "showAddressOnReceipt": true,
-    "showCuitOnReceipt": true
+    "showCuitOnReceipt": true,
+    "contactWhatsapp": "5491148927491",
+    "contactInstagram": "mirandasport.ok"
   },
   "users": [
     {

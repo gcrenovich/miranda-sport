@@ -113,8 +113,12 @@ app.post('/api/orders', async (req, res) => {
   try {
     const { customerName, customerCuit, customerEmail, customerPhone, customerAddress, paymentMethod, items } = req.body;
 
-    if (!customerName || !items || !items.length) {
-      return res.status(400).json({ error: 'Faltan datos del cliente o items del pedido' });
+    if (!customerName || !customerPhone || !customerAddress || !items || !items.length) {
+      return res.status(400).json({ error: 'Faltan datos obligatorios del cliente (Nombre, Teléfono o Dirección) o artículos en el pedido.' });
+    }
+
+    if (customerPhone.trim().replace(/[\s\-\+\(\)]/g, '').length < 8) {
+      return res.status(400).json({ error: 'El número de teléfono de contacto debe tener al menos 8 dígitos.' });
     }
 
     const products = await db.getProducts();

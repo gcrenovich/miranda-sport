@@ -69,7 +69,9 @@ const SettingsSchema = new mongoose.Schema({
   showPhoneOnReceipt: { type: Boolean, default: true },
   showEmailOnReceipt: { type: Boolean, default: true },
   showAddressOnReceipt: { type: Boolean, default: true },
-  showCuitOnReceipt: { type: Boolean, default: true }
+  showCuitOnReceipt: { type: Boolean, default: true },
+  contactWhatsapp: { type: String, default: "5491148927491" },
+  contactInstagram: { type: String, default: "mirandasport.ok" }
 }, { timestamps: true });
 
 // Mongoose Models
@@ -205,7 +207,9 @@ const db = {
             showPhoneOnReceipt: true,
             showEmailOnReceipt: true,
             showAddressOnReceipt: true,
-            showCuitOnReceipt: true
+            showCuitOnReceipt: true,
+            contactWhatsapp: "5491148927491",
+            contactInstagram: "mirandasport.ok"
           });
         }
       } else if (settingsCount === 0) {
@@ -226,7 +230,9 @@ const db = {
           showPhoneOnReceipt: true,
           showEmailOnReceipt: true,
           showAddressOnReceipt: true,
-          showCuitOnReceipt: true
+          showCuitOnReceipt: true,
+          contactWhatsapp: "5491148927491",
+          contactInstagram: "mirandasport.ok"
         });
       }
     } catch (error) {
@@ -395,7 +401,9 @@ const db = {
       showPhoneOnReceipt: true,
       showEmailOnReceipt: true,
       showAddressOnReceipt: true,
-      showCuitOnReceipt: true
+      showCuitOnReceipt: true,
+      contactWhatsapp: "5491148927491",
+      contactInstagram: "mirandasport.ok"
     };
 
     if (useMongoDB) {
