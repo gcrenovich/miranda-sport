@@ -34,6 +34,11 @@ function generateInvoiceNumber(orders, type) {
 
 // API Routes
 
+// Keep-Alive / Health Check Endpoint
+app.get('/api/ping', (req, res) => {
+  res.json({ status: 'active', timestamp: new Date().toISOString() });
+});
+
 // 1. PRODUCTS API
 app.get('/api/products', async (req, res) => {
   try {
