@@ -52,6 +52,11 @@
         if (adminBtn) adminBtn.style.borderBottom = '2px solid var(--accent-color)';
         if (cartToggle) cartToggle.style.display = 'none';
         
+        const mobTienda = document.getElementById('mobile-nav-tienda');
+        const mobAdmin = document.getElementById('mobile-nav-admin');
+        if (mobTienda) mobTienda.classList.remove('active');
+        if (mobAdmin) mobAdmin.classList.add('active');
+        
         alert("Acceso Autorizado en Modo Seguro.");
       } else {
         alert("Acceso Denegado: Usuario o contraseña incorrectos.");
@@ -73,6 +78,11 @@
       if (tiendaBtn) tiendaBtn.style.borderBottom = '2px solid var(--accent-color)';
       if (adminBtn) adminBtn.style.borderBottom = '2px solid transparent';
       if (cartToggle) cartToggle.style.display = 'flex';
+      
+      const mobTienda = document.getElementById('mobile-nav-tienda');
+      const mobAdmin = document.getElementById('mobile-nav-admin');
+      if (mobTienda) mobTienda.classList.add('active');
+      if (mobAdmin) mobAdmin.classList.remove('active');
     }
     
     function handleTrackingBtnClickInline(event) {
@@ -970,6 +980,22 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar (App & Mobile Web view) -->
+  <div class="mobile-bottom-nav">
+    <button class="mobile-nav-btn active" id="mobile-nav-tienda" onclick="handleTiendaBtnClickInline(event)">
+      <i class="fas fa-store"></i>
+      <span>Tienda</span>
+    </button>
+    <button class="mobile-nav-btn" id="mobile-nav-tracking" onclick="handleTrackingBtnClickInline(event)">
+      <i class="fas fa-search-location"></i>
+      <span>Seguir</span>
+    </button>
+    <button class="mobile-nav-btn" id="mobile-nav-admin" onclick="handleAdminBtnClickInline(event)">
+      <i class="fas fa-cog"></i>
+      <span>Vendedor</span>
+    </button>
   </div>
 
   <!-- Floating WhatsApp Contact Button -->

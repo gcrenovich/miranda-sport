@@ -907,3 +907,43 @@
     flex: 2;
   }
 }
+
+/* Global Store Quantity Picker Styles (Product Cards and Details Modal) */
+.store-qty-picker {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-primary);
+  overflow: hidden;
+  height: 38px;
+}
+
+.store-qty-picker .qty-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 28px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--text-secondary);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.store-qty-picker .qty-btn:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.store-qty-picker span,
+.store-qty-picker .qty-val {
+  width: 28px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  user-select: none;
+}

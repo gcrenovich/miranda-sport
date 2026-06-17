@@ -112,6 +112,33 @@ document.addEventListener('DOMContentLoaded', () => {
       switchSection('tienda');
     });
 
+    // Mobile bottom navigation bindings
+    const mobTienda = document.getElementById('mobile-nav-tienda');
+    if (mobTienda) {
+      mobTienda.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchSection('tienda');
+      });
+    }
+
+    const mobTracking = document.getElementById('mobile-nav-tracking');
+    if (mobTracking) {
+      mobTracking.addEventListener('click', (e) => {
+        e.preventDefault();
+        const trackingBtn = document.getElementById('nav-tracking-btn');
+        if (trackingBtn) trackingBtn.click();
+      });
+    }
+
+    const mobAdmin = document.getElementById('mobile-nav-admin');
+    if (mobAdmin) {
+      mobAdmin.addEventListener('click', (e) => {
+        e.preventDefault();
+        const adminBtn = document.getElementById('nav-admin-btn');
+        if (adminBtn) adminBtn.click();
+      });
+    }
+
     // Tracking Modal events
     const trackingBtn = document.getElementById('nav-tracking-btn');
     const trackingModal = document.getElementById('tracking-modal-overlay');
@@ -1037,6 +1064,19 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // Auto refresh data when entering admin panel
       refreshData().then(() => renderAll());
+    }
+
+    // Highlight mobile bottom options
+    const mobTienda = document.getElementById('mobile-nav-tienda');
+    const mobAdmin = document.getElementById('mobile-nav-admin');
+    if (mobTienda && mobAdmin) {
+      if (section === 'tienda') {
+        mobTienda.classList.add('active');
+        mobAdmin.classList.remove('active');
+      } else {
+        mobTienda.classList.remove('active');
+        mobAdmin.classList.add('active');
+      }
     }
 
     // Scroll to top

@@ -357,6 +357,7 @@ main {
   justify-content: center;
   color: var(--text-secondary);
   transition: all var(--transition-fast);
+  z-index: 10;
 }
 
 .modal-close:hover {
@@ -556,5 +557,84 @@ footer {
     width: 50px;
     height: 50px;
     font-size: 26px;
+  }
+}
+
+/* Mobile Bottom Navigation Bar Styles */
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* Prevent footer content from overlapping with bottom sticky bar */
+  body {
+    padding-bottom: 75px !important;
+  }
+
+  /* Hide main top header buttons to avoid horizontal overflow/wrapping */
+  header .nav-actions .nav-btn {
+    display: none !important;
+  }
+
+  /* Reduce unified logo scale for mobile widths */
+  .logo-svg-unified {
+    width: 130px;
+    height: 55px;
+  }
+
+  .navbar-container {
+    padding: 0.5rem 1rem;
+  }
+
+  /* Layout and styles for bottom nav bar */
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border-glass);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 999;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: env(safe-area-inset-bottom);
+    transition: background-color var(--transition-normal), border-color var(--transition-normal);
+  }
+
+  .mobile-nav-btn {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    gap: 3px;
+    flex: 1;
+    height: 100%;
+    transition: all var(--transition-fast);
+    padding: 4px 0;
+  }
+
+  .mobile-nav-btn i {
+    font-size: 1.15rem;
+    transition: transform var(--transition-fast);
+  }
+
+  .mobile-nav-btn:active i {
+    transform: scale(0.9);
+  }
+
+  .mobile-nav-btn.active {
+    color: var(--accent-color);
+    text-shadow: 0 0 10px var(--accent-glow);
   }
 }
