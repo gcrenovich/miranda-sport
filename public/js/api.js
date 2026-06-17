@@ -116,21 +116,47 @@ function initLocalBackup() {
   }
 }
 
-// Check server status
-async function checkServer() {
+// Helper to perform server requests with automatic online/offline state switching
+async function fetchFromServer(endpoint, options = {}) {
   if (window.location.protocol.startsWith('file')) {
-    isUsingLocalBackup = true;
-    initLocalBackup();
-    console.log('Miranda Sport: Running from local HTML file. Custom localStorage database enabled.');
-    return;
+    throw new Error('Local file protocol');
   }
 
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), 8000); // 8 seconds timeout
+
   try {
-    const res = await fetch(`${API_BASE}/api/products`, { method: 'HEAD' });
-    isUsingLocalBackup = !res.ok;
+    const response = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      signal: controller.signal
+    });
+    clearTimeout(id);
+    if (response.ok) {
+      if (isUsingLocalBackup) {
+        isUsingLocalBackup = false;
+        if (window.UI) window.UI.updateConnectionStatus(false);
+      }
+      return response;
+    }
+    throw new Error(`Server returned status ${response.status}`);
+  } catch (e) {
+    clearTimeout(id);
+    if (!isUsingLocalBackup) {
+      isUsingLocalBackup = true;
+      if (window.UI) window.UI.updateConnectionStatus(true);
+    }
+    throw e;
+  }
+}
+
+// Check server status (initial check)
+async function checkServer() {
+  try {
+    await fetchFromServer('/api/products', { method: 'HEAD' });
+    isUsingLocalBackup = false;
   } catch (e) {
     isUsingLocalBackup = true;
-    console.log('Miranda Sport: Server offline. Custom localStorage database enabled.');
+    console.log('Miranda Sport: Initial server check failed (possibly server sleeping). Fallback to localStorage enabled.');
   }
   initLocalBackup();
 }
@@ -146,16 +172,26 @@ const API = {
   },
 
   async getProducts() {
-    if (isUsingLocalBackup) {
-      return JSON.parse(localStorage.getItem('miranda_products'));
+    try {
+      const res = await fetchFromServer('/api/products');
+      const data = await res.json();
+      localStorage.setItem('miranda_products', JSON.stringify(data));
+      return data;
+    } catch (e) {
+      return JSON.parse(localStorage.getItem('miranda_products')) || [];
     }
-    const response = await fetch(`${API_BASE}/api/products`);
-    return await response.json();
   },
 
   async createProduct(productData) {
-    if (isUsingLocalBackup) {
-      const products = JSON.parse(localStorage.getItem('miranda_products'));
+    try {
+      const res = await fetchFromServer('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productData)
+      });
+      return await res.json();
+    } catch (e) {
+      const products = JSON.parse(localStorage.getItem('miranda_products')) || [];
       const newProduct = {
         id: 'prod-' + Date.now(),
         ...productData,
@@ -167,18 +203,18 @@ const API = {
       localStorage.setItem('miranda_products', JSON.stringify(products));
       return newProduct;
     }
-
-    const response = await fetch(`${API_BASE}/api/products`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(productData)
-    });
-    return await response.json();
   },
 
   async updateProduct(id, productData) {
-    if (isUsingLocalBackup) {
-      const products = JSON.parse(localStorage.getItem('miranda_products'));
+    try {
+      const res = await fetchFromServer(`/api/products/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productData)
+      });
+      return await res.json();
+    } catch (e) {
+      const products = JSON.parse(localStorage.getItem('miranda_products')) || [];
       const idx = products.findIndex(p => p.id === id);
       if (idx !== -1) {
         products[idx] = {
@@ -191,41 +227,40 @@ const API = {
         localStorage.setItem('miranda_products', JSON.stringify(products));
         return products[idx];
       }
-      throw new Error('Product not found');
+      throw new Error('Product not found in local storage');
     }
-
-    const response = await fetch(`${API_BASE}/api/products/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(productData)
-    });
-    return await response.json();
   },
 
   async deleteProduct(id) {
-    if (isUsingLocalBackup) {
-      const products = JSON.parse(localStorage.getItem('miranda_products'));
+    try {
+      const res = await fetchFromServer(`/api/products/${id}`, {
+        method: 'DELETE'
+      });
+      return await res.json();
+    } catch (e) {
+      const products = JSON.parse(localStorage.getItem('miranda_products')) || [];
       const filtered = products.filter(p => p.id !== id);
       localStorage.setItem('miranda_products', JSON.stringify(filtered));
-      return { message: 'Product deleted' };
+      return { message: 'Product deleted from local storage' };
     }
-
-    const response = await fetch(`${API_BASE}/api/products/${id}`, {
-      method: 'DELETE'
-    });
-    return await response.json();
   },
 
   async getOrders() {
-    if (isUsingLocalBackup) {
-      return JSON.parse(localStorage.getItem('miranda_orders'));
+    try {
+      const res = await fetchFromServer('/api/orders');
+      const data = await res.json();
+      localStorage.setItem('miranda_orders', JSON.stringify(data));
+      return data;
+    } catch (e) {
+      return JSON.parse(localStorage.getItem('miranda_orders')) || [];
     }
-    const response = await fetch(`${API_BASE}/api/orders`);
-    return await response.json();
   },
 
   async trackOrder(code) {
-    if (isUsingLocalBackup) {
+    try {
+      const res = await fetchFromServer(`/api/orders/track/${code}`);
+      return await res.json();
+    } catch (e) {
       const orders = JSON.parse(localStorage.getItem('miranda_orders') || '[]');
       const found = orders.find(o => 
         o.id.toLowerCase() === code.toLowerCase() || 
@@ -233,15 +268,19 @@ const API = {
       );
       return found || null;
     }
-    const response = await fetch(`${API_BASE}/api/orders/track/${code}`);
-    if (response.status === 404) return null;
-    return await response.json();
   },
 
   async createOrder(orderData) {
-    if (isUsingLocalBackup) {
-      const products = JSON.parse(localStorage.getItem('miranda_products'));
-      const orders = JSON.parse(localStorage.getItem('miranda_orders'));
+    try {
+      const res = await fetchFromServer('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
+      return await res.json();
+    } catch (e) {
+      const products = JSON.parse(localStorage.getItem('miranda_products')) || [];
+      const orders = JSON.parse(localStorage.getItem('miranda_orders')) || [];
 
       // Validate stock
       for (const item of orderData.items) {
@@ -281,43 +320,36 @@ const API = {
       localStorage.setItem('miranda_orders', JSON.stringify(orders));
       return newOrder;
     }
-
-    const response = await fetch(`${API_BASE}/api/orders`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(orderData)
-    });
-    
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error || 'Error creando pedido');
-    }
-    return await response.json();
   },
 
   async updateOrderStatus(id, status) {
-    if (isUsingLocalBackup) {
-      const orders = JSON.parse(localStorage.getItem('miranda_orders'));
+    try {
+      const res = await fetchFromServer(`/api/orders/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+      return await res.json();
+    } catch (e) {
+      const orders = JSON.parse(localStorage.getItem('miranda_orders')) || [];
       const idx = orders.findIndex(o => o.id === id);
       if (idx !== -1) {
         orders[idx].status = status;
         localStorage.setItem('miranda_orders', JSON.stringify(orders));
         return orders[idx];
       }
-      throw new Error('Order not found');
+      throw new Error('Order not found in local storage');
     }
-
-    const response = await fetch(`${API_BASE}/api/orders/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status })
-    });
-    return await response.json();
   },
 
   async invoiceOrder(id) {
-    if (isUsingLocalBackup) {
-      const orders = JSON.parse(localStorage.getItem('miranda_orders'));
+    try {
+      const res = await fetchFromServer(`/api/orders/${id}/invoice`, {
+        method: 'POST'
+      });
+      return await res.json();
+    } catch (e) {
+      const orders = JSON.parse(localStorage.getItem('miranda_orders')) || [];
       const idx = orders.findIndex(o => o.id === id);
       if (idx === -1) throw new Error('Order not found');
 
@@ -327,7 +359,6 @@ const API = {
       const cleanCuit = order.customerCuit ? order.customerCuit.replace(/\D/g, '') : '';
       const type = (cleanCuit.length === 11 && cleanCuit !== '20000000009') ? 'A' : 'B';
       
-      // Generate mock invoice numbers
       const billedOrders = orders.filter(o => o.invoiceNumber && o.invoiceType === type);
       let nextNum = 1;
       if (billedOrders.length > 0) {
@@ -348,16 +379,16 @@ const API = {
       localStorage.setItem('miranda_orders', JSON.stringify(orders));
       return order;
     }
-
-    const response = await fetch(`${API_BASE}/api/orders/${id}/invoice`, {
-      method: 'POST'
-    });
-    return await response.json();
   },
 
   async completeOrderWithoutInvoice(id) {
-    if (isUsingLocalBackup) {
-      const orders = JSON.parse(localStorage.getItem('miranda_orders'));
+    try {
+      const res = await fetchFromServer(`/api/orders/${id}/no-invoice`, {
+        method: 'POST'
+      });
+      return await res.json();
+    } catch (e) {
+      const orders = JSON.parse(localStorage.getItem('miranda_orders')) || [];
       const idx = orders.findIndex(o => o.id === id);
       if (idx === -1) throw new Error('Order not found');
 
@@ -373,103 +404,75 @@ const API = {
       localStorage.setItem('miranda_orders', JSON.stringify(orders));
       return order;
     }
-
-    const response = await fetch(`${API_BASE}/api/orders/${id}/no-invoice`, {
-      method: 'POST'
-    });
-    return await response.json();
   },
 
   async clearOrders() {
-    if (isUsingLocalBackup) {
+    try {
+      const res = await fetchFromServer('/api/orders', {
+        method: 'DELETE'
+      });
+      return await res.json();
+    } catch (e) {
       localStorage.setItem('miranda_orders', JSON.stringify([]));
-      return { message: "Todos los pedidos fueron eliminados" };
+      return { message: "Todos los pedidos fueron eliminados de local storage" };
     }
-    const response = await fetch(`${API_BASE}/api/orders`, {
-      method: 'DELETE'
-    });
-    return await response.json();
   },
 
   async getSettings() {
-    if (isUsingLocalBackup) {
-      if (!localStorage.getItem('miranda_settings')) {
-        const defaultSettings = {
-          heroTitle: "Energía que impulsa tu rendimiento",
-          heroDesc: "Fabricamos e importamos instrumentos deportivos de máxima durabilidad y diseño ergonómico para gimnasios y deportistas profesionales.",
-          heroImage: "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=800&auto=format&fit=crop",
-          themeColor: "pink",
-          glowEffects: false,
-          sellerName: "MIRANDA SPORT",
-          sellerCuit: "30-71850122-3",
-          sellerAddress: "Av. del Libertador 4200, CABA, Argentina",
-          sellerPhone: "011-4892-7491",
-          sellerEmail: "ventas@mirandasport.com.ar",
-          sellerIva: "IVA Responsable Inscripto",
-          sellerActivityStart: "01/03/2021",
-          showPhoneOnReceipt: true,
-          showEmailOnReceipt: true,
-          showAddressOnReceipt: true,
-          showCuitOnReceipt: true
-        };
-        localStorage.setItem('miranda_settings', JSON.stringify(defaultSettings));
-      } else {
-        try {
-          const current = JSON.parse(localStorage.getItem('miranda_settings'));
-          const defaultSellerSettings = {
-            sellerName: "MIRANDA SPORT",
-            sellerCuit: "30-71850122-3",
-            sellerAddress: "Av. del Libertador 4200, CABA, Argentina",
-            sellerPhone: "011-4892-7491",
-            sellerEmail: "ventas@mirandasport.com.ar",
-            sellerIva: "IVA Responsable Inscripto",
-            sellerActivityStart: "01/03/2021",
-            showPhoneOnReceipt: true,
-            showEmailOnReceipt: true,
-            showAddressOnReceipt: true,
-            showCuitOnReceipt: true
-          };
-          let updated = false;
-          for (const key in defaultSellerSettings) {
-            if (current[key] === undefined) {
-              current[key] = defaultSellerSettings[key];
-              updated = true;
-            }
-          }
-          if (updated) {
-            localStorage.setItem('miranda_settings', JSON.stringify(current));
-          }
-        } catch (e) {
-          console.error('Error merging local settings:', e);
-        }
-      }
-      return JSON.parse(localStorage.getItem('miranda_settings'));
+    try {
+      const res = await fetchFromServer('/api/settings');
+      const data = await res.json();
+      localStorage.setItem('miranda_settings', JSON.stringify(data));
+      return data;
+    } catch (e) {
+      return JSON.parse(localStorage.getItem('miranda_settings')) || {
+        heroTitle: "Energía que impulsa tu rendimiento",
+        heroDesc: "Fabricamos e importamos instrumentos deportivos de máxima durabilidad y diseño ergonómico para gimnasios y deportistas profesionales.",
+        heroImage: "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=800&auto=format&fit=crop",
+        themeColor: "pink",
+        glowEffects: false,
+        sellerName: "MIRANDA SPORT",
+        sellerCuit: "30-71850122-3",
+        sellerAddress: "Av. del Libertador 4200, CABA, Argentina",
+        sellerPhone: "011-4892-7491",
+        sellerEmail: "ventas@mirandasport.com.ar",
+        sellerIva: "IVA Responsable Inscripto",
+        sellerActivityStart: "01/03/2021",
+        showPhoneOnReceipt: true,
+        showEmailOnReceipt: true,
+        showAddressOnReceipt: true,
+        showCuitOnReceipt: true
+      };
     }
-
-    const response = await fetch(`${API_BASE}/api/settings`);
-    return await response.json();
   },
 
   async updateSettings(settingsData) {
-    if (isUsingLocalBackup) {
+    try {
+      const res = await fetchFromServer('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settingsData)
+      });
+      return await res.json();
+    } catch (e) {
       localStorage.setItem('miranda_settings', JSON.stringify(settingsData));
       return settingsData;
     }
-
-    const response = await fetch(`${API_BASE}/api/settings`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(settingsData)
-    });
-    return await response.json();
   },
 
   async login(username, password) {
-    if (isUsingLocalBackup) {
+    try {
+      const res = await fetchFromServer('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      return await res.json();
+    } catch (e) {
       const users = JSON.parse(localStorage.getItem('miranda_users') || '[]');
       const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
       if (!user) {
-        throw new Error('Usuario o contraseña incorrectos');
+        throw new Error('Usuario o contraseña incorrectos en modo offline');
       }
       return {
         id: user.id,
@@ -478,33 +481,30 @@ const API = {
         role: user.role
       };
     }
-
-    const response = await fetch(`${API_BASE}/api/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error || 'Error de autenticación');
-    }
-    return await response.json();
   },
 
   async getUsers() {
-    if (isUsingLocalBackup) {
+    try {
+      const res = await fetchFromServer('/api/users');
+      return await res.json();
+    } catch (e) {
       return JSON.parse(localStorage.getItem('miranda_users') || '[]');
     }
-    const response = await fetch(`${API_BASE}/api/users`);
-    return await response.json();
   },
 
   async createUser(userData) {
-    if (isUsingLocalBackup) {
+    try {
+      const res = await fetchFromServer('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+      });
+      return await res.json();
+    } catch (e) {
       const users = JSON.parse(localStorage.getItem('miranda_users') || '[]');
       const exists = users.some(u => u.username.toLowerCase() === userData.username.toLowerCase());
       if (exists) {
-        throw new Error('El nombre de usuario ya está registrado');
+        throw new Error('El nombre de usuario ya está registrado en modo offline');
       }
       const newUser = {
         id: 'usr-' + Date.now(),
@@ -514,29 +514,25 @@ const API = {
       localStorage.setItem('miranda_users', JSON.stringify(users));
       return newUser;
     }
-
-    const response = await fetch(`${API_BASE}/api/users`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData)
-    });
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error || 'Error creando usuario');
-    }
-    return await response.json();
   },
 
   async updateUser(id, userData) {
-    if (isUsingLocalBackup) {
+    try {
+      const res = await fetchFromServer(`/api/users/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+      });
+      return await res.json();
+    } catch (e) {
       const users = JSON.parse(localStorage.getItem('miranda_users') || '[]');
       const idx = users.findIndex(u => u.id === id);
-      if (idx === -1) throw new Error('Usuario no encontrado');
+      if (idx === -1) throw new Error('Usuario no encontrado en modo offline');
 
       if (userData.username && userData.username.toLowerCase() !== users[idx].username.toLowerCase()) {
         const exists = users.some(u => u.username.toLowerCase() === userData.username.toLowerCase());
         if (exists) {
-          throw new Error('El nombre de usuario ya está registrado');
+          throw new Error('El nombre de usuario ya está registrado en modo offline');
         }
       }
 
@@ -553,24 +549,18 @@ const API = {
       localStorage.setItem('miranda_users', JSON.stringify(users));
       return updated;
     }
-
-    const response = await fetch(`${API_BASE}/api/users/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData)
-    });
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error || 'Error actualizando usuario');
-    }
-    return await response.json();
   },
 
   async deleteUser(id) {
-    if (isUsingLocalBackup) {
+    try {
+      const res = await fetchFromServer(`/api/users/${id}`, {
+        method: 'DELETE'
+      });
+      return await res.json();
+    } catch (e) {
       const users = JSON.parse(localStorage.getItem('miranda_users') || '[]');
       const idx = users.findIndex(u => u.id === id);
-      if (idx === -1) throw new Error('Usuario no encontrado');
+      if (idx === -1) throw new Error('Usuario no encontrado en modo offline');
 
       const userToDelete = users[idx];
       if (userToDelete.role === 'admin') {
@@ -582,17 +572,8 @@ const API = {
 
       const filtered = users.filter(u => u.id !== id);
       localStorage.setItem('miranda_users', JSON.stringify(filtered));
-      return { message: 'Usuario eliminado con éxito' };
+      return { message: 'Usuario eliminado con éxito de local storage' };
     }
-
-    const response = await fetch(`${API_BASE}/api/users/${id}`, {
-      method: 'DELETE'
-    });
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error || 'Error eliminando usuario');
-    }
-    return await response.json();
   }
 };
 
