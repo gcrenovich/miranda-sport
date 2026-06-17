@@ -1,14 +1,14 @@
-const CACHE_NAME = 'miranda-sport-v1.0.7';
+const CACHE_NAME = 'miranda-sport-v1.0.8';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/css/variables.css?v=1.0.4',
-  '/css/main.css?v=1.0.4',
-  '/css/ecommerce.css?v=1.0.4',
-  '/css/dashboard.css?v=1.0.4',
-  '/js/api.js?v=1.0.6',
-  '/js/ui.js?v=1.0.6',
-  '/js/app.js?v=1.0.6',
+  '/css/variables.css?v=1.0.7',
+  '/css/main.css?v=1.0.7',
+  '/css/ecommerce.css?v=1.0.7',
+  '/css/dashboard.css?v=1.0.7',
+  '/js/api.js?v=1.0.7',
+  '/js/ui.js?v=1.0.7',
+  '/js/app.js?v=1.0.7',
   '/manifest.json',
   '/icon.svg'
 ];

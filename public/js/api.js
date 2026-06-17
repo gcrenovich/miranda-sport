@@ -127,6 +127,7 @@ async function fetchFromServer(endpoint, options = {}) {
 
   try {
     const response = await fetch(`${API_BASE}${endpoint}`, {
+      cache: 'no-store', // Force client-side bypass of browser cache
       ...options,
       signal: controller.signal
     });
