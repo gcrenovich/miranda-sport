@@ -22,6 +22,25 @@ const UI = {
     });
   },
 
+  // Update server connection status badge (MongoDB vs Local localStorage)
+  updateConnectionStatus(isLocal) {
+    const badge = document.getElementById('connection-status-badge');
+    if (!badge) return;
+
+    const dot = badge.querySelector('.status-dot');
+    const text = badge.querySelector('.status-text');
+
+    if (isLocal) {
+      badge.className = 'connection-status-badge offline';
+      if (text) text.textContent = 'Modo Local (Offline)';
+      badge.title = 'Servidor local no detectado o corriendo sin MongoDB. Los cambios se guardan localmente en tu navegador.';
+    } else {
+      badge.className = 'connection-status-badge online';
+      if (text) text.textContent = 'Base de datos Nube';
+      badge.title = 'Conectado exitosamente al servidor con base de datos MongoDB Atlas.';
+    }
+  },
+
   // Toast Notification system
   showToast(title, desc, type = 'success') {
     let container = document.getElementById('toast-container');

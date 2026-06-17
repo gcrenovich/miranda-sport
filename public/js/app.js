@@ -34,6 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize API/localStorage databases
     await API.init();
 
+    // Update server status indicator badge in header
+    UI.updateConnectionStatus(API.isLocalMode());
+
     // Fetch initial datasets
     await refreshData();
 
