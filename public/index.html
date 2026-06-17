@@ -930,36 +930,36 @@
 
   <!-- MODAL: PRODUCT DETAIL VIEW (CLIENT) -->
   <div id="product-detail-modal-overlay" class="modal-overlay">
-    <div class="modal-content" style="max-width: 600px; padding: 2rem;">
+    <div class="product-detail-modal-content">
       <button class="modal-close" id="product-detail-modal-close">&times;</button>
       
-      <div class="product-detail-container" style="display: flex; flex-direction: column; gap: 1.5rem; text-align: left;">
-        <div class="product-detail-img-wrapper" style="width: 100%; height: 250px; overflow: hidden; border-radius: var(--radius-md); border: 1px solid var(--border-glass);">
-          <img id="modal-product-image" src="" alt="Product Image" style="width: 100%; height: 100%; object-fit: cover;">
+      <div class="product-detail-layout">
+        <div class="product-detail-image-box">
+          <img id="modal-product-image" src="" alt="Product Image">
         </div>
         <div>
-          <span id="modal-product-category" class="product-cat" style="font-size: 0.85rem; font-weight: 700; color: var(--accent-color); text-transform: uppercase; letter-spacing: 1px;">Cardio</span>
-          <h2 id="modal-product-name" style="font-weight: 800; font-size: 1.6rem; margin-top: 0.25rem; color: var(--text-primary); line-height: 1.25;">Nombre del Producto</h2>
+          <span id="modal-product-category" class="product-cat">Cardio</span>
+          <h2 id="modal-product-name" class="product-detail-title">Nombre del Producto</h2>
         </div>
         <div>
-          <h4 style="font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; color: var(--text-primary);">Descripción</h4>
-          <p id="modal-product-description" style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">Descripción completa...</p>
+          <h4 class="product-detail-desc-title">Descripción</h4>
+          <p id="modal-product-description" class="product-detail-desc">Descripción completa...</p>
         </div>
         
-        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-glass); padding-top: 1.25rem; margin-top: 0.5rem;">
-          <div>
-            <div style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">PRECIO FINAL</div>
-            <span id="modal-product-price" style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary);">$0</span>
+        <div class="product-detail-footer">
+          <div class="product-detail-price-box">
+            <div class="product-detail-price-label">PRECIO FINAL</div>
+            <span id="modal-product-price" class="product-detail-price-val">$0</span>
           </div>
           
-          <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <div id="modal-product-qty-picker" class="store-qty-picker" style="display: flex; align-items: center; border: 1px solid var(--border-glass); border-radius: var(--radius-sm); background-color: var(--bg-primary); overflow: hidden; height: 42px;">
-              <button class="qty-btn" id="modal-qty-dec" style="background: none; border: none; cursor: pointer; width: 30px; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--text-secondary); transition: background-color var(--transition-fast);">&minus;</button>
-              <span id="modal-qty-val" style="width: 30px; text-align: center; font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">1</span>
-              <button class="qty-btn" id="modal-qty-inc" style="background: none; border: none; cursor: pointer; width: 30px; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--text-secondary); transition: background-color var(--transition-fast);">&plus;</button>
+          <div class="product-detail-actions">
+            <div id="modal-product-qty-picker" class="store-qty-picker" style="height: 42px;">
+              <button class="qty-btn" id="modal-qty-dec">&minus;</button>
+              <span id="modal-qty-val">1</span>
+              <button class="qty-btn" id="modal-qty-inc">&plus;</button>
             </div>
             
-            <button id="modal-product-add-btn" class="btn btn-primary" style="height: 42px; padding: 0 1.5rem; font-weight: 700;">
+            <button id="modal-product-add-btn" class="btn btn-primary" style="height: 42px; font-weight: 700;">
               <i class="fas fa-shopping-cart"></i> Agregar
             </button>
           </div>

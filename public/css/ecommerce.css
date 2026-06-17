@@ -766,3 +766,144 @@
     max-width: 100%;
   }
 }
+
+/* Product Detail Modal styles */
+.product-detail-modal-content {
+  max-width: 600px;
+  width: 90%;
+  padding: 2rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+.product-detail-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: left;
+}
+
+.product-detail-image-box {
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-glass);
+}
+
+.product-detail-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-detail-title {
+  font-weight: 800;
+  font-size: 1.6rem;
+  margin-top: 0.25rem;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.product-detail-desc-title {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.product-detail-desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.product-detail-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-glass);
+  padding-top: 1.25rem;
+  margin-top: 0.5rem;
+  gap: 1rem;
+}
+
+.product-detail-price-box {
+  flex-shrink: 0;
+}
+
+.product-detail-price-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.product-detail-price-val {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.product-detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Responsive adjustments for Mobile & WebView */
+@media (max-width: 576px) {
+  .product-detail-modal-content {
+    padding: 1.25rem;
+    width: 95%;
+  }
+  
+  .product-detail-layout {
+    gap: 1rem;
+  }
+  
+  .product-detail-image-box {
+    height: 180px;
+  }
+  
+  .product-detail-title {
+    font-size: 1.35rem;
+  }
+  
+  .product-detail-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding-top: 1rem;
+  }
+  
+  .product-detail-price-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed var(--border-glass);
+    padding-bottom: 0.5rem;
+  }
+  
+  .product-detail-price-val {
+    font-size: 1.5rem;
+  }
+  
+  .product-detail-actions {
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .product-detail-actions .store-qty-picker {
+    flex: 1;
+    justify-content: space-between;
+  }
+  
+  .product-detail-actions .btn {
+    flex: 2;
+  }
+}
