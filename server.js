@@ -201,8 +201,9 @@ app.post('/api/orders/:id/invoice', async (req, res) => {
       return res.status(400).json({ error: 'El pedido ya ha sido facturado.' });
     }
 
-    // Determine invoice type: if CUIT is provided and long, make it Factura A, else Factura B
-    const type = (order.customerCuit && order.customerCuit.length > 11 && order.customerCuit !== '20-00000000-9') ? 'A' : 'B';
+    // Determine invoice type: if CUIT is provided and has 11 digits, make it Factura A, else Factura B
+    const cleanCuit = order.customerCuit ? order.customerCuit.replace(/\D/g, '') : '';
+    const type = (cleanCuit.length === 11 && cleanCuit !== '20000000009') ? 'A' : 'B';
     const invoiceNumber = generateInvoiceNumber(orders, type);
     const cae = generateCAE();
     const caeDueDate = new Date();
@@ -288,7 +289,11 @@ app.post('/api/login', async (req, res) => {
 app.get('/api/users', async (req, res) => {
   try {
     const users = await db.getUsers();
-    res.json(users);
+    const sanitized = users.map(u => {
+      const { password, ...rest } = u;
+      return rest;
+    });
+    res.json(sanitized);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -306,7 +311,8 @@ app.post('/api/users', async (req, res) => {
       return res.status(400).json({ error: 'El nombre de usuario ya está registrado' });
     }
     const newUser = await db.createUser({ username, password, name, role });
-    res.status(201).json(newUser);
+    const { password: _, ...sanitized } = newUser;
+    res.status(201).json(sanitized);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -333,7 +339,8 @@ app.put('/api/users/:id', async (req, res) => {
       updateData.password = password;
     }
     const updated = await db.updateUser(req.params.id, updateData);
-    res.json(updated);
+    const { password: _, ...sanitized } = updated;
+    res.json(sanitized);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -355,7 +362,8 @@ app.delete('/api/users/:id', async (req, res) => {
     }
 
     const deleted = await db.deleteUser(req.params.id);
-    res.json({ message: 'Usuario eliminado con éxito', user: deleted });
+    const { password: _, ...sanitized } = deleted;
+    res.json({ message: 'Usuario eliminado con éxito', user: sanitized });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

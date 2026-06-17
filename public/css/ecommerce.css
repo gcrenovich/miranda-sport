@@ -198,6 +198,7 @@
   flex-direction: column;
   transition: all var(--transition-normal);
   position: relative;
+  cursor: pointer;
 }
 
 .product-card:hover {

@@ -60,6 +60,112 @@ const UI = {
     }, 3500);
   },
 
+  // Open Product Detail Modal (Client)
+  showProductDetailModal(product, onAddToCart) {
+    const overlay = document.getElementById('product-detail-modal-overlay');
+    const closeBtn = document.getElementById('product-detail-modal-close');
+    if (!overlay || !closeBtn) return;
+
+    // Fill details
+    const img = document.getElementById('modal-product-image');
+    const cat = document.getElementById('modal-product-category');
+    const name = document.getElementById('modal-product-name');
+    const desc = document.getElementById('modal-product-description');
+    const price = document.getElementById('modal-product-price');
+    const stockStatus = document.getElementById('modal-product-stock-status');
+    const addBtn = document.getElementById('modal-product-add-btn');
+    const qtyPicker = document.getElementById('modal-product-qty-picker');
+    const qtyVal = document.getElementById('modal-qty-val');
+    const qtyDec = document.getElementById('modal-qty-dec');
+    const qtyInc = document.getElementById('modal-qty-inc');
+
+    if (img) {
+      img.src = product.image || 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=600&auto=format&fit=crop';
+      img.alt = product.name;
+    }
+    if (cat) cat.textContent = product.category;
+    if (name) name.textContent = product.name;
+    if (desc) desc.textContent = product.description;
+    if (price) price.textContent = this.formatCurrency(product.price);
+    
+    // Reset quantity
+    let currentQty = 1;
+    if (qtyVal) qtyVal.textContent = currentQty;
+
+    // Handle stock status display & elements state
+    if (product.stock === 0) {
+      if (stockStatus) {
+        stockStatus.innerHTML = `<span style="color: var(--color-danger);"><i class="fas fa-times-circle"></i> Sin stock disponible</span>`;
+      }
+      if (qtyPicker) qtyPicker.style.display = 'none';
+      if (addBtn) {
+        addBtn.disabled = true;
+        addBtn.textContent = 'Sin Stock';
+        addBtn.style.opacity = '0.5';
+      }
+    } else {
+      if (stockStatus) {
+        if (product.stock <= 3) {
+          stockStatus.innerHTML = `<span style="color: var(--color-warning);"><i class="fas fa-exclamation-triangle"></i> ¡Últimas unidades! (${product.stock} restantes)</span>`;
+        } else {
+          stockStatus.innerHTML = `<span style="color: var(--color-success);"><i class="fas fa-check-circle"></i> En stock disponible (${product.stock} unidades)</span>`;
+        }
+      }
+      if (qtyPicker) qtyPicker.style.display = 'flex';
+      if (addBtn) {
+        addBtn.disabled = false;
+        addBtn.innerHTML = `<i class="fas fa-shopping-cart"></i> Agregar al Carrito`;
+        addBtn.style.opacity = '1';
+      }
+    }
+
+    // Set up quantity picker events in modal
+    const newQtyDec = qtyDec.cloneNode(true);
+    const newQtyInc = qtyInc.cloneNode(true);
+    qtyDec.parentNode.replaceChild(newQtyDec, qtyDec);
+    qtyInc.parentNode.replaceChild(newQtyInc, qtyInc);
+
+    newQtyDec.addEventListener('click', () => {
+      if (currentQty > 1) {
+        currentQty--;
+        qtyVal.textContent = currentQty;
+      }
+    });
+
+    newQtyInc.addEventListener('click', () => {
+      if (currentQty < product.stock) {
+        currentQty++;
+        qtyVal.textContent = currentQty;
+      } else {
+        this.showToast('Límite alcanzado', `Dispones de un stock máximo de ${product.stock} unidades.`, 'warning');
+      }
+    });
+
+    // Set up Add button click event
+    const newAddBtn = addBtn.cloneNode(true);
+    addBtn.parentNode.replaceChild(newAddBtn, addBtn);
+    
+    if (product.stock > 0) {
+      newAddBtn.addEventListener('click', () => {
+        onAddToCart(product, currentQty);
+        overlay.classList.remove('active');
+      });
+    }
+
+    // Close Modal events
+    const closeModal = () => {
+      overlay.classList.remove('active');
+    };
+    
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeModal();
+    });
+
+    // Open Modal
+    overlay.classList.add('active');
+  },
+
   // Render client product grid
   renderStoreProducts(products, onAddToCart) {
     const grid = document.getElementById('products-grid');
@@ -118,8 +224,9 @@ const UI = {
 
       // Event listener for adding to cart with quantity
       const btn = card.querySelector('.product-add-btn');
+      let currentQty = 1;
+      
       if (btn && prod.stock > 0) {
-        let currentQty = 1;
         const qtyVal = card.querySelector('.qty-val');
         const decBtn = card.querySelector('.dec-btn');
         const incBtn = card.querySelector('.inc-btn');
@@ -142,8 +249,22 @@ const UI = {
           });
         }
 
-        btn.addEventListener('click', () => onAddToCart(prod, currentQty));
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          onAddToCart(prod, currentQty);
+        });
       }
+
+      // Stop click event propagation on interactive elements inside card
+      const picker = card.querySelector('.store-qty-picker');
+      if (picker) {
+        picker.addEventListener('click', (e) => e.stopPropagation());
+      }
+
+      // Click card to open detail modal
+      card.addEventListener('click', () => {
+        this.showProductDetailModal(prod, onAddToCart);
+      });
 
       grid.appendChild(card);
     });

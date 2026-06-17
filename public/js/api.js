@@ -254,7 +254,9 @@ const API = {
       // Deduct stock
       orderData.items.forEach(item => {
         const prod = products.find(p => p.id === item.productId);
-        prod.stock -= item.quantity;
+        if (prod) {
+          prod.stock -= item.quantity;
+        }
       });
 
       let subtotal = 0;
@@ -322,7 +324,8 @@ const API = {
       const order = orders[idx];
       if (order.status === 'Facturado') throw new Error('Ya facturado');
 
-      const type = (order.customerCuit && order.customerCuit.length > 11 && order.customerCuit !== '20-00000000-9') ? 'A' : 'B';
+      const cleanCuit = order.customerCuit ? order.customerCuit.replace(/\D/g, '') : '';
+      const type = (cleanCuit.length === 11 && cleanCuit !== '20000000009') ? 'A' : 'B';
       
       // Generate mock invoice numbers
       const billedOrders = orders.filter(o => o.invoiceNumber && o.invoiceType === type);
