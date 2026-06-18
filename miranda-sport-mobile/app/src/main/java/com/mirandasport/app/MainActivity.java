@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String DEFAULT_PROD_URL = "https://mirandasport.onrender.com";
+    private static final String DEFAULT_PROD_URL = "https://miranda-sport.onrender.com";
     private static final String DEFAULT_LOCAL_URL = "http://10.0.2.2:3000";
     private static final String PREFS_NAME = "MirandaPrefs";
     private static final String KEY_SERVER_URL = "server_url";

@@ -145,9 +145,40 @@ async function fetchFromServer(endpoint, options = {}) {
     if (!isUsingLocalBackup) {
       isUsingLocalBackup = true;
       if (window.UI) window.UI.updateConnectionStatus(true);
+      startConnectionPoller();
     }
     throw e;
   }
+}
+
+let pollerInterval = null;
+
+function startConnectionPoller() {
+  if (pollerInterval) return;
+  console.log("Miranda Sport: Monitoreo de reconexión iniciado.");
+  pollerInterval = setInterval(async () => {
+    if (!isUsingLocalBackup) {
+      clearInterval(pollerInterval);
+      pollerInterval = null;
+      return;
+    }
+    try {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), 4000);
+      const res = await fetch(`${API_BASE}/api/ping`, { signal: controller.signal });
+      clearTimeout(id);
+      if (res.ok) {
+        isUsingLocalBackup = false;
+        console.log("Miranda Sport: ¡Servidor restablecido! Reconectando...");
+        if (window.UI) window.UI.updateConnectionStatus(false);
+        window.dispatchEvent(new CustomEvent('miranda-online'));
+        clearInterval(pollerInterval);
+        pollerInterval = null;
+      }
+    } catch (e) {
+      // Still offline
+    }
+  }, 10000); // Check every 10 seconds
 }
 
 // Check server status (initial check)
@@ -158,6 +189,7 @@ async function checkServer() {
   } catch (e) {
     isUsingLocalBackup = true;
     console.log('Miranda Sport: Initial server check failed (possibly server sleeping). Fallback to localStorage enabled.');
+    startConnectionPoller();
   }
   initLocalBackup();
 }

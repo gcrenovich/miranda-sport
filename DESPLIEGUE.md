@@ -32,7 +32,7 @@ Para asegurar que el sistema sea 100% funcional tanto en un servidor en la nube 
 
 ## 3. Guía Paso a Paso: Cómo Subir el Proyecto a Render.com Gratis
 
-Para hospedar tu sistema y obtener el dominio `mirandasport.onrender.com`, debes seguir estos sencillos pasos:
+Para hospedar tu sistema y obtener el dominio `miranda-sport.onrender.com`, debes seguir estos sencillos pasos:
 
 ### Paso 1: Subir el código a GitHub
 1. Si no tienes una cuenta de GitHub, créala en [github.com](https://github.com).
@@ -48,7 +48,7 @@ Para hospedar tu sistema y obtener el dominio `mirandasport.onrender.com`, debes
 
 ### Paso 3: Configurar el despliegue gratuito
 En el formulario de configuración de Render, completa los siguientes campos:
-- **Name (Nombre del servicio):** Escribe `mirandasport` (esto definirá tu subdominio, dándote la dirección `mirandasport.onrender.com`).
+- **Name (Nombre del servicio):** Escribe `miranda-sport` (esto definirá tu subdominio, dándote la dirección `miranda-sport.onrender.com`).
 - **Language (Lenguaje):** Selecciona `Node`.
 - **Branch (Rama):** Selecciona `main` (o la rama donde subiste tus archivos).
 - **Region (Región):** Selecciona cualquiera (por ejemplo, *Ohio* u *Oregon*).
@@ -59,4 +59,4 @@ En el formulario de configuración de Render, completa los siguientes campos:
 Haz click en **"Create Web Service"** en la parte inferior.
 
 ### Paso 4: ¡Listo!
-Render comenzará a descargar y compilar tu proyecto. En unos 2 o 3 minutos verás un mensaje que dice **"Your service is live"**. En la parte superior del panel de Render verás el enlace de tu sitio web: `https://mirandasport.onrender.com`.
+Render comenzará a descargar y compilar tu proyecto. En unos 2 o 3 minutos verás un mensaje que dice **"Your service is live"**. En la parte superior del panel de Render verás el enlace de tu sitio web: `https://miranda-sport.onrender.com`.

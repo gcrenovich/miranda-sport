@@ -105,6 +105,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 3. Setup event listeners
   function setupEventListeners() {
+    window.addEventListener('miranda-online', async () => {
+      UI.showToast('Conexión Restablecida', 'Se ha reconectado con el servidor en la nube. Actualizando datos...', 'success');
+      await refreshData();
+      renderAll();
+    });
+
     // Header navigation
     document.getElementById('nav-logo').addEventListener('click', (e) => {
       e.preventDefault();
