@@ -1,6 +1,31 @@
+const fs = require('fs');
+const path = require('path');
+
+// Load environment variables from local .env file if it exists (No external dependencies needed)
+try {
+  const envPath = path.join(__dirname, '.env');
+  if (fs.existsSync(envPath)) {
+    const envContent = fs.readFileSync(envPath, 'utf8');
+    envContent.split(/\r?\n/).forEach(line => {
+      const trimmedLine = line.trim();
+      if (trimmedLine && !trimmedLine.startsWith('#')) {
+        const index = trimmedLine.indexOf('=');
+        if (index !== -1) {
+          const key = trimmedLine.substring(0, index).trim();
+          let val = trimmedLine.substring(index + 1).trim();
+          if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
+          else if (val.startsWith("'") && val.endsWith("'")) val = val.slice(1, -1);
+          process.env[key] = val;
+        }
+      }
+    });
+  }
+} catch (e) {
+  console.error('Error al cargar archivo .env:', e.message);
+}
+
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const db = require('./db');
 
 const app = express();
