@@ -7,6 +7,11 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -24,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_SERVER_URL = "server_url";
 
     private WebView webView;
+    private ValueCallback<Uri[]> uploadMessage;
+    private static final int FILECHOOSER_RESULTCODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +83,41 @@ public class MainActivity extends AppCompatActivity {
             }
 
             private void handleConnectionError(WebView view, String failingUrl) {
-                if (!isFallbackRedirected && failingUrl != null && failingUrl.startsWith(DEFAULT_LOCAL_URL)) {
+                if (!isFallbackRedirected && failingUrl != null && !failingUrl.startsWith(DEFAULT_PROD_URL)) {
                     isFallbackRedirected = true;
-                    Log.w("MirandaSport", "Servidor local inaccesible (" + DEFAULT_LOCAL_URL + "). Redirigiendo a producción...");
-                    Toast.makeText(MainActivity.this, "Servidor local inaccesible. Cargando producción...", Toast.LENGTH_LONG).show();
+                    Log.w("MirandaSport", "Servidor (" + failingUrl + ") inaccesible. Redirigiendo a producción...");
+                    Toast.makeText(MainActivity.this, "Servidor inaccesible. Cargando producción...", Toast.LENGTH_LONG).show();
                     view.loadUrl(DEFAULT_PROD_URL);
                 }
+            }
+        });
+
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+                if (uploadMessage != null) {
+                    uploadMessage.onReceiveValue(null);
+                    uploadMessage = null;
+                }
+                uploadMessage = filePathCallback;
+
+                Intent intent = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    intent = fileChooserParams.createIntent();
+                } else {
+                    intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("*/*");
+                }
+
+                try {
+                    startActivityForResult(intent, FILECHOOSER_RESULTCODE);
+                } catch (ActivityNotFoundException e) {
+                    uploadMessage = null;
+                    Toast.makeText(MainActivity.this, "No se pudo abrir el selector de archivos", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+                return true;
             }
         });
 
@@ -175,6 +211,29 @@ public class MainActivity extends AppCompatActivity {
                 || android.os.Build.PRODUCT.contains("vbox86p")
                 || android.os.Build.PRODUCT.contains("emulator")
                 || android.os.Build.PRODUCT.contains("simulator");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FILECHOOSER_RESULTCODE) {
+            if (uploadMessage == null) return;
+            Uri[] results = null;
+            if (resultCode == RESULT_OK && data != null) {
+                String dataString = data.getDataString();
+                if (dataString != null) {
+                    results = new Uri[]{Uri.parse(dataString)};
+                } else if (data.getClipData() != null) {
+                    int count = data.getClipData().getItemCount();
+                    results = new Uri[count];
+                    for (int i = 0; i < count; i++) {
+                        results[i] = data.getClipData().getItemAt(i).getUri();
+                    }
+                }
+            }
+            uploadMessage.onReceiveValue(results);
+            uploadMessage = null;
+        }
     }
 
     // Override back button behavior to navigate back within WebView instead of exiting the app
